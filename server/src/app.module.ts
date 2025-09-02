@@ -5,6 +5,10 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { PrismaModule } from "./prisma/prisma.module";
 import { HelperModule } from "./helper/helper.module";
+import { AuthModule } from "./auth/auth.module";
+import { UsersModule } from "./users/users.module";
+import { TeamsModule } from "./teams/teams.module";
+import { TasksModule } from "./tasks/tasks.module";
 
 @Module({
   imports: [
@@ -28,6 +32,10 @@ import { HelperModule } from "./helper/helper.module";
     }),
     PrismaModule,
     HelperModule,
+    AuthModule,
+    UsersModule,
+    TeamsModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
