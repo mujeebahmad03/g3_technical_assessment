@@ -2,6 +2,7 @@ import { HttpAdapterHost, NestFactory } from "@nestjs/core";
 import { RequestMethod, ValidationPipe } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { ConfigService } from "@nestjs/config";
+import { NestExpressApplication } from "@nestjs/platform-express";
 import * as compression from "compression";
 import helmet from "helmet";
 import { Logger } from "nestjs-pino";
@@ -13,7 +14,7 @@ import {
 } from "./common/filters";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app: NestExpressApplication = await NestFactory.create(AppModule);
 
   const configService = app.get(ConfigService);
 
@@ -51,6 +52,8 @@ async function bootstrap() {
       },
     }),
   );
+
+  app.set("query parser", "extended");
 
   // Global API prefix
   app.setGlobalPrefix("api/v1", {
