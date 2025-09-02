@@ -1,0 +1,204 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  username       String    @unique
+  hashedPassword String
+  firstName      String
+  lastName       String
+  profileImage   String?
+  bio            String?
+  lastLogin      DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  teamMemberships TeamMember[]
+  createdTasks    Task[]         @relation("TaskCreator")
+  assignedTasks   Task[]         @relation("TaskAssignee")
+  teams           Team[]
+  invitations     Invitation[]
+  taskComments    TaskComment[]
+  activityLogs    ActivityLog[]
+  notifications   Notification[]
+}
+
+model Team {
+  id          String  @id @default(cuid())
+  name        String
+  slug        String?
+  description String?
+  isArchived  Boolean @default(false)
+
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members       TeamMember[]
+  tasks         Task[]
+  invitations   Invitation[]
+  activityLogs  ActivityLog[]
+  notifications Notification[]
+
+  @@unique([ownerId, name])
+}
+
+model Invitation {
+  id         String           @id @default(cuid())
+  email      String // invitee's email (can be used before user registers)
+  status     InvitationStatus @default(PENDING)
+  invitedAt  DateTime         @default(now())
+  acceptedAt DateTime?
+  rejectedAt DateTime?
+
+  teamId    String
+  invitedBy String
+
+  team    Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  inviter User @relation(fields: [invitedBy], references: [id], onDelete: Cascade)
+}
+
+model TeamMember {
+  id        String    @id @default(cuid())
+  role      Role      @default(MEMBER)
+  joinedAt  DateTime  @default(now())
+  invitedAt DateTime?
+  invitedBy String?
+
+  userId String
+  teamId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, teamId])
+}
+
+model Task {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  status      TaskStatus   @default(TODO)
+  priority    TaskPriority @default(MEDIUM)
+  dueDate     DateTime?
+  completedAt DateTime?
+  isArchived  Boolean      @default(false)
+
+  teamId     String
+  createdBy  String
+  assignedTo String?
+
+  team     Team  @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  creator  User  @relation("TaskCreator", fields: [createdBy], references: [id])
+  assignee User? @relation("TaskAssignee", fields: [assignedTo], references: [id])
+
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  taskComments  TaskComment[]
+  activityLogs  ActivityLog[]
+  notifications Notification[]
+}
+
+model TaskComment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  taskId String
+  userId String
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ActivityLog {
+  id        String       @id @default(cuid())
+  action    ActivityType
+  details   String? // optional JSON or text to store extra context
+  createdAt DateTime     @default(now())
+
+  userId String?
+  teamId String?
+  taskId String?
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  team Team? @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  task Task? @relation(fields: [taskId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  type      NotificationType
+  message   String
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  userId String
+  teamId String?
+  taskId String?
+
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team Team? @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  task Task? @relation(fields: [taskId], references: [id], onDelete: Cascade)
+}
+
+enum NotificationType {
+  TEAM_INVITE
+  TEAM_ROLE_CHANGED
+  TASK_ASSIGNED
+  TASK_UPDATED
+  TASK_COMPLETED
+  COMMENT_ADDED
+  GENERAL
+}
+
+enum ActivityType {
+  USER_JOINED_TEAM
+  USER_LEFT_TEAM
+  USER_INVITED
+  TASK_CREATED
+  TASK_UPDATED
+  TASK_ASSIGNED
+  TASK_COMPLETED
+  COMMENT_ADDED
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
