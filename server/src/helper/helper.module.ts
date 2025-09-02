@@ -32,7 +32,7 @@ import { PaginationHelperService } from "./pagination-helper.service";
     HelperService,
     JWTHelperService,
     ResponseHelperService,
-    PaginationHelperService
+    PaginationHelperService,
   ],
 })
 export class HelperModule {}
