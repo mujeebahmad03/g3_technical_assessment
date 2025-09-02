@@ -1,4 +1,3 @@
-import { ErrorResponse } from "./error-response.interface";
-import { QueryOptions } from "./query.interface";
-
-export { ErrorResponse, QueryOptions };
+export * from "./auth.interface";
+export * from "./error-response.interface";
+export * from "./query.interface";
