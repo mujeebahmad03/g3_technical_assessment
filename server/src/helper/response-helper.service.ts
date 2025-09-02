@@ -20,35 +20,35 @@ export class ResponseHelperService<T> {
     };
   }
 
-  throwBadRequest(message: string) {
+  throwBadRequest(message: string): never {
     throw new BadRequestException({
       isSuccessful: false,
       message: message,
     });
   }
 
-  throwNotFound(message: string) {
+  throwNotFound(message: string): never {
     throw new NotFoundException({
       isSuccessful: false,
       message: message,
     });
   }
 
-  throwForbidden(message: string) {
+  throwForbidden(message: string): never {
     throw new ForbiddenException({
       isSuccessful: false,
       message: message,
     });
   }
 
-  throwBadGateway(message: string) {
+  throwBadGateway(message: string): never {
     throw new BadGatewayException({
       isSuccessful: false,
       message: message,
     });
   }
 
-  throwInternalServer(message: string, error?: any) {
+  throwInternalServer(message: string, error?: any): never {
     throw new InternalServerErrorException({
       isSuccessful: false,
       message: message,
@@ -56,14 +56,14 @@ export class ResponseHelperService<T> {
     });
   }
 
-  throwUnauthorized(message: string) {
+  throwUnauthorized(message: string): never {
     throw new UnauthorizedException({
       isSuccessful: false,
       message: message,
     });
   }
 
-  throwConflict(message: string) {
+  throwConflict(message: string): never {
     throw new ConflictException({
       isSuccessful: false,
       message: message,
