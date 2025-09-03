@@ -82,33 +82,638 @@ The application uses a comprehensive PostgreSQL schema with the following main e
 ## 🔗 API Endpoints
 
 ### Authentication (`/api/v1/auth`)
-- `POST /register` - Register a new user
-- `POST /login` - User login
-- `POST /refresh` - Refresh access token
-- `POST /logout` - User logout (requires authentication)
+
+#### `POST /register` - Register a new user
+**Payload:**
+```json
+{
+  "email": "user@example.com",
+  "username": "john_doe",
+  "password": "StrongP@ssw0rd",
+  "firstName": "John",
+  "lastName": "Doe"
+}
+```
+**Response:**
+```json
+{
+  "isSuccessful": true,
+  "message": "User registered successfully",
+  "data": {
+    "user": {
+      "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "email": "user@example.com",
+      "username": "john_doe",
+      "firstName": "John",
+      "lastName": "Doe",
+      "profileImage": null,
+      "bio": null,
+      "lastLogin": null,
+      "createdAt": "2025-09-01T12:34:56.789Z",
+      "updatedAt": "2025-09-01T12:34:56.789Z"
+    },
+  }
+}
+```
+
+#### `POST /login` - User login
+**Payload:**
+```json
+{
+  "email": "user@example.com",
+  "password": "StrongP@ssw0rd"
+}
+```
+**Response:**
+```json
+{
+  "isSuccessful": true,
+  "message": "Login successful",
+  "data": {
+    "user": {
+      "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "email": "user@example.com",
+      "username": "john_doe",
+      "firstName": "John",
+      "lastName": "Doe",
+      "profileImage": "https://example.com/avatar.png",
+      "bio": "Software engineer and open-source enthusiast",
+      "lastLogin": "2025-09-01T12:34:56.789Z",
+      "createdAt": "2025-08-20T10:15:30.000Z",
+      "updatedAt": "2025-09-01T14:20:00.000Z"
+    },
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ...",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ..."
+  }
+}
+```
+
+#### `POST /refresh` - Refresh access token
+**Payload:**
+```json
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ..."
+}
+```
+**Response:**
+```json
+{
+  "isSuccessful": true,
+  "message": "Access token refreshed successfully",
+  "data": {
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ..."
+  }
+}
+```
+
+#### `POST /logout` - User logout (requires authentication)
+**Headers:** `Authorization: Bearer <token>`
+**Payload:** None
+**Response:**
+```json
+{
+  "isSuccessful": true,
+  "message": "User logged out successfully",
+  "data": null
+}
+```
 
 ### Users (`/api/v1/users`)
-- `GET /profile` - Get current user profile
-- `PATCH /update-profile` - Update user profile
+
+#### `GET /profile` - Get current user profile
+**Headers:** `Authorization: Bearer <token>`
+**Payload:** None
+**Response:**
+```json
+{
+  "isSuccessful": true,
+  "message": "User profile retrieved successfully",
+  "data": {
+    "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "email": "user@example.com",
+    "username": "john_doe",
+    "firstName": "John",
+    "lastName": "Doe",
+    "profileImage": "https://example.com/avatar.png",
+    "bio": "Software engineer and open-source enthusiast",
+    "lastLogin": "2025-09-01T12:34:56.789Z",
+    "createdAt": "2025-08-20T10:15:30.000Z",
+    "updatedAt": "2025-09-01T14:20:00.000Z"
+  }
+}
+```
+
+#### `PATCH /update-profile` - Update user profile
+**Headers:** `Authorization: Bearer <token>`
+**Payload:**
+```json
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "profileImage": "https://example.com/avatar.png",
+  "bio": "Passionate software engineer and open-source contributor"
+}
+```
+*All fields are optional*
+**Response:**
+```json
+{
+  "isSuccessful": true,
+  "message": "User profile updated successfully",
+  "data": {
+    "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "email": "user@example.com",
+    "username": "john_doe",
+    "firstName": "John",
+    "lastName": "Doe",
+    "profileImage": "https://example.com/avatar.png",
+    "bio": "Passionate software engineer and open-source contributor",
+    "lastLogin": "2025-09-01T12:34:56.789Z",
+    "createdAt": "2025-08-20T10:15:30.000Z",
+    "updatedAt": "2025-09-01T14:20:00.000Z"
+  }
+}
+```
 
 ### Teams (`/api/v1/teams`)
-- `POST /` - Create a new team
-- `GET /` - Get all teams for current user
-- `GET /:teamId/members` - Get team members (with pagination)
-- `POST /:teamId/invite` - Invite user to team
-- `GET /invitations` - Get pending invitations
-- `POST /invitations/:invitationId/accept` - Accept team invitation
-- `POST /:teamId/bulk-invite` - Bulk invite users to team
-- `DELETE /:teamId/members/:userId` - Remove user from team
-- `DELETE /:teamId/members/bulk` - Bulk remove users from team
+
+#### `POST /` - Create a new team
+**Headers:** `Authorization: Bearer <token>`
+**Payload:**
+```json
+{
+  "name": "Development Team",
+  "description": "A team focused on developing new features"
+}
+```
+*description is optional*
+**Response:**
+```json
+{
+  "isSuccessful": true,
+  "message": "Team created successfully",
+  "data": {
+    "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "name": "Development Team",
+    "slug": "development-team",
+    "description": "A team focused on developing new features",
+    "isArchived": false,
+    "ownerId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "createdAt": "2025-09-01T12:34:56.789Z",
+    "updatedAt": "2025-09-01T12:34:56.789Z"
+  }
+}
+```
+
+#### `GET /` - Get all teams for current user
+**Headers:** `Authorization: Bearer <token>`
+**Payload:** None
+**Response:**
+```json
+{
+  "isSuccessful": true,
+  "message": "User teams retrieved successfully",
+  "data": [
+    {
+      "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "name": "Development Team",
+      "slug": "development-team",
+      "description": "A team focused on developing new features",
+      "isArchived": false,
+      "ownerId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "createdAt": "2025-09-01T12:34:56.789Z",
+      "updatedAt": "2025-09-01T12:34:56.789Z"
+    }
+  ]
+}
+```
+
+#### `GET /:teamId/members` - Get team members (with pagination)
+**Headers:** `Authorization: Bearer <token>`
+**Query Parameters:**
+```json
+{
+  "page": 1,
+  "limit": 10,
+  "searchKey": "search text",
+  "filters": {
+    "role": {
+      "eq": "ADMIN"
+    }
+  },
+  "sort": "createdAt:desc"
+}
+```
+*All query parameters are optional*
+**Response:**
+```json
+{
+  "isSuccessful": true,
+  "message": "Team members retrieved successfully",
+  "data": [
+    {
+      "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "role": "ADMIN",
+      "joinedAt": "2025-09-01T12:34:56.789Z",
+      "invitedAt": null,
+      "invitedBy": null,
+      "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "teamId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "user": {
+        "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+        "email": "user@example.com",
+        "username": "john_doe",
+        "firstName": "John",
+        "lastName": "Doe",
+        "profileImage": "https://example.com/avatar.png",
+        "bio": "Software engineer and open-source enthusiast",
+        "lastLogin": "2025-09-01T12:34:56.789Z",
+        "createdAt": "2025-08-20T10:15:30.000Z",
+        "updatedAt": "2025-09-01T14:20:00.000Z"
+      }
+    }
+  ],
+  "meta": {
+    "totalItems": 25,
+    "page": 1,
+    "limit": 10,
+    "hasMore": true
+  }
+}
+```
+
+#### `POST /:teamId/invite` - Invite user to team
+**Headers:** `Authorization: Bearer <token>`
+**Payload:**
+```json
+{
+  "email": "user@example.com"
+}
+```
+*OR*
+```json
+{
+  "username": "john_doe"
+}
+```
+*Either email or username is required*
+**Response:**
+```json
+{
+  "isSuccessful": true,
+  "message": "User invited to team successfully",
+  "data": {
+    "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "email": "user@example.com",
+    "status": "PENDING",
+    "invitedAt": "2025-09-01T12:34:56.789Z",
+    "acceptedAt": null,
+    "rejectedAt": null,
+    "teamId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "invitedBy": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+  }
+}
+```
+
+#### `GET /invitations` - Get pending invitations
+**Headers:** `Authorization: Bearer <token>`
+**Query Parameters:** Same as team members endpoint
+**Response:**
+```json
+{
+  "isSuccessful": true,
+  "message": "Pending invitations retrieved successfully",
+  "data": [
+    {
+      "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "email": "user@example.com",
+      "status": "PENDING",
+      "invitedAt": "2025-09-01T12:34:56.789Z",
+      "acceptedAt": null,
+      "rejectedAt": null,
+      "teamId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "invitedBy": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+    }
+  ]
+}
+```
+
+#### `POST /invitations/:invitationId/accept` - Accept team invitation
+**Headers:** `Authorization: Bearer <token>`
+**Payload:** None
+**Response:**
+```json
+{
+  "isSuccessful": true,
+  "message": "Invitation accepted successfully",
+  "data": {
+    "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "role": "MEMBER",
+    "joinedAt": "2025-09-01T12:34:56.789Z",
+    "invitedAt": "2025-09-01T12:34:56.789Z",
+    "invitedBy": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "teamId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "user": {
+      "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "email": "user@example.com",
+      "username": "john_doe",
+      "firstName": "John",
+      "lastName": "Doe",
+      "profileImage": "https://example.com/avatar.png",
+      "bio": "Software engineer and open-source enthusiast",
+      "lastLogin": "2025-09-01T12:34:56.789Z",
+      "createdAt": "2025-08-20T10:15:30.000Z",
+      "updatedAt": "2025-09-01T14:20:00.000Z"
+    }
+  }
+}
+```
+
+#### `POST /:teamId/bulk-invite` - Bulk invite users to team
+**Headers:** `Authorization: Bearer <token>`
+**Payload:**
+```json
+{
+  "invitees": [
+    { "email": "alice@example.com" },
+    { "username": "john_doe" }
+  ]
+}
+```
+**Response:**
+```json
+{
+  "isSuccessful": true,
+  "message": "Users invited to team successfully",
+  "data": [
+    {
+      "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "email": "alice@example.com",
+      "status": "PENDING",
+      "invitedAt": "2025-09-01T12:34:56.789Z",
+      "acceptedAt": null,
+      "rejectedAt": null,
+      "teamId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "invitedBy": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+    }
+  ]
+}
+```
+
+#### `DELETE /:teamId/members/:userId` - Remove user from team
+**Headers:** `Authorization: Bearer <token>`
+**Payload:** None
+**Response:**
+```json
+{
+  "isSuccessful": true,
+  "message": "User removed successfully",
+  "data": {
+    "message": "User removed successfully"
+  }
+}
+```
+
+#### `DELETE /:teamId/members/bulk` - Bulk remove users from team
+**Headers:** `Authorization: Bearer <token>`
+**Payload:**
+```json
+{
+  "targetIds": [
+    "1a2b3c4d-5678-90ab-cdef-1234567890ab",
+    "9z8y7x6w-5432-10ba-fedc-0987654321zy"
+  ]
+}
+```
+**Response:**
+```json
+{
+  "isSuccessful": true,
+  "message": "Users removed successfully",
+  "data": {
+    "message": "Users removed successfully",
+    "removedCount": 3
+  }
+}
+```
 
 ### Tasks (`/api/v1/teams/:teamId/tasks`)
-- `GET /` - List tasks in a team (with pagination)
-- `POST /` - Create a new task
-- `GET /:taskId` - Get specific task details
-- `PATCH /:taskId` - Update task
-- `DELETE /:taskId` - Delete task
-- `PATCH /:taskId/assign` - Assign task to team member
+
+#### `GET /` - List tasks in a team (with pagination)
+**Headers:** `Authorization: Bearer <token>`
+**Query Parameters:** Same as team members endpoint
+**Response:**
+```json
+{
+  "isSuccessful": true,
+  "message": "Tasks fetched successfully",
+  "data": [
+    {
+      "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "title": "Implement login",
+      "description": "Use OAuth2",
+      "status": "TODO",
+      "priority": "HIGH",
+      "dueDate": "2025-10-01T00:00:00.000Z",
+      "completedAt": null,
+      "teamId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "createdBy": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "assignedTo": null,
+      "createdAt": "2025-09-01T12:34:56.789Z",
+      "updatedAt": "2025-09-01T12:34:56.789Z"
+    }
+  ],
+  "meta": {
+    "totalItems": 15,
+    "page": 1,
+    "limit": 10,
+    "hasMore": true
+  }
+}
+```
+
+#### `POST /` - Create a new task
+**Headers:** `Authorization: Bearer <token>`
+**Payload:**
+```json
+{
+  "title": "Implement login",
+  "description": "Use OAuth2",
+  "priority": "HIGH",
+  "dueDate": "2025-10-01"
+}
+```
+*description, priority, and dueDate are optional*
+**Response:**
+```json
+{
+  "isSuccessful": true,
+  "message": "Task created successfully",
+  "data": {
+    "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "title": "Implement login",
+    "description": "Use OAuth2",
+    "status": "TODO",
+    "priority": "HIGH",
+    "dueDate": "2025-10-01T00:00:00.000Z",
+    "completedAt": null,
+    "teamId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "createdBy": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "assignedTo": null,
+    "createdAt": "2025-09-01T12:34:56.789Z",
+    "updatedAt": "2025-09-01T12:34:56.789Z"
+  }
+}
+```
+
+#### `GET /:taskId` - Get specific task details
+**Headers:** `Authorization: Bearer <token>`
+**Payload:** None
+**Response:**
+```json
+{
+  "isSuccessful": true,
+  "message": "Task fetched successfully",
+  "data": {
+    "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "title": "Implement login",
+    "description": "Use OAuth2",
+    "status": "TODO",
+    "priority": "HIGH",
+    "dueDate": "2025-10-01T00:00:00.000Z",
+    "completedAt": null,
+    "teamId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "createdBy": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "assignedTo": null,
+    "createdAt": "2025-09-01T12:34:56.789Z",
+    "updatedAt": "2025-09-01T12:34:56.789Z"
+  }
+}
+```
+
+#### `PATCH /:taskId` - Update task
+**Headers:** `Authorization: Bearer <token>`
+**Payload:**
+```json
+{
+  "title": "Updated task title",
+  "description": "Updated description",
+  "status": "IN_PROGRESS",
+  "priority": "MEDIUM",
+  "dueDate": "2025-10-15"
+}
+```
+*All fields are optional*
+**Response:**
+```json
+{
+  "isSuccessful": true,
+  "message": "Task updated successfully",
+  "data": {
+    "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "title": "Updated task title",
+    "description": "Updated description",
+    "status": "IN_PROGRESS",
+    "priority": "MEDIUM",
+    "dueDate": "2025-10-15T00:00:00.000Z",
+    "completedAt": null,
+    "teamId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "createdBy": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "assignedTo": null,
+    "createdAt": "2025-09-01T12:34:56.789Z",
+    "updatedAt": "2025-09-01T14:20:00.000Z"
+  }
+}
+```
+
+#### `DELETE /:taskId` - Delete task
+**Headers:** `Authorization: Bearer <token>`
+**Payload:** None
+**Response:**
+```json
+{
+  "isSuccessful": true,
+  "message": "Task deleted successfully",
+  "data": {
+    "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "title": "Updated task title",
+    "description": "Updated description",
+    "status": "IN_PROGRESS",
+    "priority": "MEDIUM",
+    "dueDate": "2025-10-15T00:00:00.000Z",
+    "completedAt": null,
+    "teamId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "createdBy": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "assignedTo": null,
+    "createdAt": "2025-09-01T12:34:56.789Z",
+    "updatedAt": "2025-09-01T14:20:00.000Z"
+  }
+}
+```
+
+#### `PATCH /:taskId/assign` - Assign task to team member
+**Headers:** `Authorization: Bearer <token>`
+**Payload:**
+```json
+{
+  "assigneeId": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+}
+```
+**Response:**
+```json
+{
+  "isSuccessful": true,
+  "message": "Task assigned successfully",
+  "data": {
+    "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "title": "Updated task title",
+    "description": "Updated description",
+    "status": "IN_PROGRESS",
+    "priority": "MEDIUM",
+    "dueDate": "2025-10-15T00:00:00.000Z",
+    "completedAt": null,
+    "teamId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "createdBy": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "assignedTo": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "createdAt": "2025-09-01T12:34:56.789Z",
+    "updatedAt": "2025-09-01T14:20:00.000Z"
+  }
+}
+```
+
+### Query Parameters Reference
+
+The following query parameters are available for paginated endpoints:
+
+- **page** (number): Page number (default: 1)
+- **limit** (number): Items per page (default: 10)
+- **searchKey** (string): Search keyword
+- **filters** (object): Filter operations per field
+- **sort** (string): Sort field and direction (e.g., "createdAt:desc")
+
+#### Filter Operations
+Available filter operations for the `filters` parameter:
+- **eq**: Equal to
+- **neq**: Not equal to
+- **contains**: Contains string
+- **startsWith**: Starts with string
+- **endsWith**: Ends with string
+- **gt**: Greater than
+- **gte**: Greater than or equal to
+- **lt**: Less than
+- **lte**: Less than or equal to
+- **in**: In array
+- **notIn**: Not in array
+- **between**: Between range
+- **before**: Before date
+- **after**: After date
+
+#### Enums Reference
+- **TaskStatus**: `TODO`, `IN_PROGRESS`, `DONE`
+- **TaskPriority**: `LOW`, `MEDIUM`, `HIGH`
+- **Role**: `ADMIN`, `MEMBER`
+- **InvitationStatus**: `PENDING`, `ACCEPTED`, `REJECTED`
 
 ## 🚀 Getting Started
 
