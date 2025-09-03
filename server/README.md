@@ -1,98 +1,351 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Team Task Manager API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A comprehensive team collaboration and task management system built with NestJS, featuring user authentication, team management, task assignment, and real-time collaboration capabilities.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 About the Application
 
-## Description
+The Team Task Manager is a robust backend API that enables teams to collaborate effectively by providing:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **User Management**: Registration, authentication, and profile management
+- **Team Collaboration**: Create teams, invite members, and manage roles
+- **Task Management**: Create, assign, update, and track tasks within teams
+- **Role-Based Access Control**: Admin and member roles with appropriate permissions
+- **Invitation System**: Email-based team invitations with acceptance/rejection workflow
+- **Activity Logging**: Track all team and task activities
+- **Notification System**: Real-time notifications for team activities
 
-## Project setup
+## 🛠️ Technologies & Tools Used
 
+### Core Framework
+- **NestJS** - Progressive Node.js framework for building scalable server-side applications
+- **TypeScript** - Type-safe JavaScript development
+- **Node.js** - JavaScript runtime environment
+
+### Database & ORM
+- **PostgreSQL** - Relational database for data persistence
+- **Prisma** - Modern database toolkit and ORM
+- **Prisma Migrate** - Database migration management
+
+### Authentication & Security
+- **JWT (JSON Web Tokens)** - Stateless authentication
+- **Argon2** - Password hashing algorithm
+- **Helmet** - Security headers middleware
+- **CORS** - Cross-origin resource sharing
+
+### API Documentation
+- **Swagger/OpenAPI** - Interactive API documentation
+- **NestJS Swagger** - Automatic API documentation generation
+
+### Development Tools
+- **ESLint** - Code linting and formatting
+- **Prettier** - Code formatting
+- **Jest** - Testing framework
+- **Docker** - Containerization
+- **Docker Compose** - Multi-container orchestration
+
+### Logging & Monitoring
+- **Pino** - Fast JSON logger
+- **NestJS Pino** - Pino integration for NestJS
+
+### Utilities
+- **Class Validator** - Decorator-based validation
+- **Class Transformer** - Object transformation
+- **CUID2** - Collision-resistant unique identifiers
+- **Slugify** - URL-friendly string generation
+- **Compression** - Response compression
+
+## 📊 Database Schema
+
+The application uses a comprehensive PostgreSQL schema with the following main entities:
+
+### Core Models
+- **User** - User accounts with authentication
+- **Team** - Team entities with ownership and membership
+- **Task** - Task management with assignment and status tracking
+- **TeamMember** - Many-to-many relationship between users and teams
+- **Invitation** - Team invitation system
+
+### Supporting Models
+- **RefreshToken** - JWT refresh token management
+- **TaskComment** - Task discussion and comments
+- **ActivityLog** - System activity tracking
+- **Notification** - User notifications
+
+### Enums
+- **Role**: ADMIN, MEMBER
+- **TaskStatus**: TODO, IN_PROGRESS, DONE
+- **TaskPriority**: LOW, MEDIUM, HIGH
+- **InvitationStatus**: PENDING, ACCEPTED, REJECTED
+- **NotificationType**: Various notification types
+- **ActivityType**: System activity types
+
+## 🔗 API Endpoints
+
+### Authentication (`/api/v1/auth`)
+- `POST /register` - Register a new user
+- `POST /login` - User login
+- `POST /refresh` - Refresh access token
+- `POST /logout` - User logout (requires authentication)
+
+### Users (`/api/v1/users`)
+- `GET /profile` - Get current user profile
+- `PATCH /update-profile` - Update user profile
+
+### Teams (`/api/v1/teams`)
+- `POST /` - Create a new team
+- `GET /` - Get all teams for current user
+- `GET /:teamId/members` - Get team members (with pagination)
+- `POST /:teamId/invite` - Invite user to team
+- `GET /invitations` - Get pending invitations
+- `POST /invitations/:invitationId/accept` - Accept team invitation
+- `POST /:teamId/bulk-invite` - Bulk invite users to team
+- `DELETE /:teamId/members/:userId` - Remove user from team
+- `DELETE /:teamId/members/bulk` - Bulk remove users from team
+
+### Tasks (`/api/v1/teams/:teamId/tasks`)
+- `GET /` - List tasks in a team (with pagination)
+- `POST /` - Create a new task
+- `GET /:taskId` - Get specific task details
+- `PATCH /:taskId` - Update task
+- `DELETE /:taskId` - Delete task
+- `PATCH /:taskId/assign` - Assign task to team member
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js (v22 or higher)
+- npm or yarn
+- PostgreSQL (v17)
+- Docker and Docker Compose (optional)
+
+### Environment Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd server
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Environment Configuration**
+   Create a `.env` file in the server directory with the following variables:
+   ```env
+   # Database Configuration
+   DATABASE_URL="postgresql://username:password@localhost:5432/team_task_manager"
+   DB_USER=your_db_user
+   DB_PASSWORD=your_db_password
+   DB_NAME=team_task_manager
+   DB_PORT=5432
+
+   # Application Configuration
+   NODE_ENV=development
+   PORT=3030
+   API_PORT=3030
+   APP_NAME="Team Task Manager API"
+
+   # JWT Configuration
+   JWT_SECRET=your_super_secret_jwt_key
+   JWT_EXPIRES_IN=15m
+   JWT_REFRESH_SECRET=your_super_secret_refresh_key
+   JWT_REFRESH_EXPIRES_IN=7d
+
+   # Swagger Configuration
+   SWAGGER_DESCRIPTION="Team Task Manager API Documentation"
+   SWAGGER_VERSION=1.0
+   ```
+
+### Database Setup
+
+#### Option 1: Using Docker Compose (Recommended)
 ```bash
-$ npm install
+# Start PostgreSQL database
+docker-compose up -d db
+
+# Wait for database to be ready, then run migrations
+npm run prisma:generate:client
+npm run prisma:dev:deploy
 ```
 
-## Compile and run the project
-
+#### Option 2: Local PostgreSQL
 ```bash
-# development
-$ npm run start
+# Create database
+createdb team_task_manager
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+# Run migrations
+npm run prisma:generate:client
+npm run prisma:dev:deploy
 ```
 
-## Run tests
+### Running the Application
 
+#### Development Mode
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# Start the application in development mode
+npm run start:dev
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+#### Production Mode
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Build the application
+npm run build
+
+# Start in production mode
+npm run start:prod
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+#### Using Docker Compose
+```bash
+# Start both database and API
+docker-compose up -d
 
-## Resources
+# View logs
+docker-compose logs -f api
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+### Accessing the Application
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- **API Base URL**: `http://localhost:3030/api/v1`
+- **API Documentation**: `http://localhost:3030/docs` (Swagger UI)
+- **Database Studio**: `npm run prisma:view` (Prisma Studio)
 
-## Support
+## 🧪 Testing
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+# Run unit tests
+npm run test
 
-## Stay in touch
+# Run tests in watch mode
+npm run test:watch
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# Run e2e tests
+npm run test:e2e
 
-## License
+# Generate test coverage
+npm run test:cov
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## 📝 Available Scripts
+
+- `npm run start` - Start the application
+- `npm run start:dev` - Start in development mode with hot reload
+- `npm run start:debug` - Start in debug mode
+- `npm run start:prod` - Start in production mode
+- `npm run build` - Build the application
+- `npm run test` - Run unit tests
+- `npm run test:e2e` - Run end-to-end tests
+- `npm run test:cov` - Run tests with coverage
+- `npm run lint` - Run ESLint
+- `npm run format` - Format code with Prettier
+- `npm run prisma:view` - Open Prisma Studio
+- `npm run prisma:deploy` - Deploy database migrations
+- `npm run prisma:generate:client` - Generate Prisma client
+
+## 🔧 Database Management
+
+### Prisma Commands
+```bash
+# Generate Prisma client
+npm run prisma:generate:client
+
+# Create and apply migration
+npm run prisma:deploy "migration_name"
+
+# Deploy migrations to production
+npm run prisma:dev:deploy
+
+# Open Prisma Studio (Database GUI)
+npm run prisma:view
+```
+
+### Database Schema Updates
+1. Modify `prisma/schema.prisma`
+2. Create migration: `npm run prisma:deploy "description"`
+3. Generate client: `npm run prisma:generate:client`
+
+## 🏗️ Project Structure
+
+```
+src/
+├── auth/                 # Authentication module
+├── common/              # Shared utilities and decorators
+│   ├── decorators/      # Custom decorators
+│   ├── dto/            # Common DTOs
+│   ├── filters/        # Exception filters
+│   ├── guards/         # Authentication guards
+│   ├── interfaces/     # TypeScript interfaces
+│   └── pipes/          # Validation pipes
+├── helper/             # Helper services
+├── models/             # Response models
+├── prisma/             # Database services
+├── tasks/              # Task management module
+├── teams/              # Team management module
+├── types/              # TypeScript type definitions
+├── users/              # User management module
+├── app.module.ts       # Root application module
+└── main.ts            # Application entry point
+```
+
+## 🔐 Security Features
+
+- **JWT Authentication** with refresh token rotation
+- **Password Hashing** using Argon2
+- **Role-Based Access Control** (RBAC)
+- **Input Validation** with class-validator
+- **Security Headers** with Helmet
+- **CORS Configuration** for cross-origin requests
+- **SQL Injection Protection** with Prisma ORM
+
+## 📈 Performance Features
+
+- **Response Compression** with gzip
+- **Database Indexing** for optimal query performance
+- **Pagination** for large datasets
+- **Efficient Logging** with Pino
+- **Connection Pooling** with Prisma
+
+## 🚀 Deployment
+
+### Docker Deployment
+```bash
+# Build and start with Docker Compose
+docker-compose up -d
+
+# Scale the API service
+docker-compose up -d --scale api=3
+```
+
+### Production Considerations
+- Set `NODE_ENV=production`
+- Use environment-specific database URLs
+- Configure proper JWT secrets
+- Set up reverse proxy (nginx)
+- Enable SSL/TLS certificates
+- Configure monitoring and logging
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Ensure all tests pass
+6. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the UNLICENSED License.
+
+## 🆘 Support
+
+For support and questions:
+- Check the API documentation at `/docs`
+- Review the code comments and inline documentation
+- Open an issue in the repository
+
+---
+
+**Happy Coding! 🎉**
