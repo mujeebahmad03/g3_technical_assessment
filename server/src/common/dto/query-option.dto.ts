@@ -1,69 +1,189 @@
-import { ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsOptional, IsNumber, IsString, IsInt, Min } from "class-validator";
+import {
+  IsInt,
+  IsOptional,
+  IsPositive,
+  IsString,
+  ValidateNested,
+  IsObject,
+} from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-export class PaginationDto {
+export class BetweenDto {
+  @ApiProperty({ example: 1 })
+  @IsInt()
+  min: number;
+
+  @ApiProperty({ example: 10 })
+  @IsInt()
+  max: number;
+}
+
+export class FilterOperationsDto {
+  @ApiPropertyOptional({ description: "Equal to" })
+  @IsOptional()
+  eq?: string | number | boolean | Date;
+
+  @ApiPropertyOptional({ description: "Not equal to" })
+  @IsOptional()
+  neq?: string | number | boolean | Date;
+
+  @ApiPropertyOptional({ example: "john", description: "Contains string" })
+  @IsOptional()
+  @IsString()
+  contains?: string;
+
+  @ApiPropertyOptional({ example: "john", description: "Starts with string" })
+  @IsOptional()
+  @IsString()
+  startsWith?: string;
+
+  @ApiPropertyOptional({ example: "son", description: "Ends with string" })
+  @IsOptional()
+  @IsString()
+  endsWith?: string;
+
+  @ApiPropertyOptional({ description: "Greater than" })
+  @IsOptional()
+  gt?: number | Date;
+
+  @ApiPropertyOptional({ description: "Greater than or equal to" })
+  @IsOptional()
+  gte?: number | Date;
+
+  @ApiPropertyOptional({ description: "Less than" })
+  @IsOptional()
+  lt?: number | Date;
+
+  @ApiPropertyOptional({ description: "Less than or equal to" })
+  @IsOptional()
+  lte?: number | Date;
+
+  @ApiPropertyOptional({ type: [String], description: "In array" })
+  @IsOptional()
+  in?: (string | number | boolean | Date)[];
+
+  @ApiPropertyOptional({ type: [String], description: "Not in array" })
+  @IsOptional()
+  notIn?: (string | number | boolean | Date)[];
+
+  @ApiPropertyOptional({ description: "Negation flag" })
+  @IsOptional()
+  not?: boolean;
+
+  @ApiPropertyOptional({ type: () => BetweenDto, description: "Between range" })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => BetweenDto)
+  between?: BetweenDto;
+
+  @ApiPropertyOptional({ description: "Is null check" })
+  @IsOptional()
+  isNull?: boolean;
+
   @ApiPropertyOptional({
-    title: "Page Number",
-    description: "The page number",
+    type: String,
+    format: "date-time",
+    description: "Before date",
   })
   @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  page: number = 1;
+  before?: Date;
 
   @ApiPropertyOptional({
-    title: "Limit",
-    description: "The number of items per page",
+    type: String,
+    format: "date-time",
+    description: "After date",
   })
   @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  limit: number = 10;
+  after?: Date;
+
+  @ApiPropertyOptional({
+    example: "keyName",
+    description: "Check if JSON has key",
+  })
+  @IsOptional()
+  @IsString()
+  hasKey?: string;
+
+  @ApiPropertyOptional({ type: [String], description: "Path for JSON queries" })
+  @IsOptional()
+  path?: string[];
+
+  @ApiPropertyOptional({
+    type: "object",
+    description: "Some condition on relation",
+    additionalProperties: true,
+  })
+  @IsOptional()
+  some?: Record<string, unknown>;
+
+  @ApiPropertyOptional({
+    type: "object",
+    description: "Every condition on relation",
+    additionalProperties: true,
+  })
+  @IsOptional()
+  every?: Record<string, unknown>;
+
+  @ApiPropertyOptional({
+    type: "object",
+    description: "None condition on relation",
+    additionalProperties: true,
+  })
+  @IsOptional()
+  none?: Record<string, unknown>;
+
+  @ApiPropertyOptional({
+    type: "object",
+    description: "Is condition on relation",
+    additionalProperties: true,
+  })
+  @IsOptional()
+  is?: Record<string, unknown>;
+
+  @ApiPropertyOptional({ description: "Check if field is set" })
+  @IsOptional()
+  isSet?: boolean;
 }
 
 export class QueryOptionsDto {
-  @ApiPropertyOptional({
-    title: "Page Number",
-    description: "The page number",
-  })
+  @ApiPropertyOptional({ example: 1, description: "Page number (default: 1)" })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
-  @Min(1)
+  @IsPositive()
   page?: number = 1;
 
   @ApiPropertyOptional({
-    title: "Limit",
-    description: "The number of items per page",
+    example: 10,
+    description: "Items per page (default: 10)",
   })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
-  @Min(1)
+  @IsPositive()
   limit?: number = 10;
 
   @ApiPropertyOptional({
-    title: "Search Keyword",
-    description: "The keyword to search for data",
+    example: "search text",
+    description: "Search keyword",
   })
   @IsOptional()
   @IsString()
   searchKey?: string;
 
   @ApiPropertyOptional({
-    title: "Filters (JSON string)",
-    description:
-      'Filter criteria as a JSON string. Example: \'{"status":{"eq":"active"},"age":{"between":{"min":18,"max":65}}}\'',
+    type: Object,
+    description: "Filter operations per field",
+    additionalProperties: { $ref: "#/components/schemas/FilterOperationsDto" },
   })
   @IsOptional()
-  @IsString()
-  filters?: string;
+  @IsObject()
+  filters?: Record<string, FilterOperationsDto>;
 
   @ApiPropertyOptional({
-    title: "Sort",
-    description: "Sort criteria with field and direction",
     example: "createdAt:desc",
+    description: "Sort field and direction",
   })
   @IsOptional()
   @IsString()

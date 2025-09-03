@@ -10,6 +10,7 @@ import {
 import {
   ApiBearerAuth,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
   getSchemaPath,
@@ -96,6 +97,7 @@ export class TeamsController {
   @UseGuards(TeamAccessGuard)
   @RequireTeamAccess()
   @ApiOperation({ summary: "Get team members by team ID" })
+  @ApiQuery({ name: "queryOptions", type: QueryOptionsDto, required: false })
   @ApiResponse({
     status: 200,
     description: "Team members retrieved successfully",
@@ -135,7 +137,7 @@ export class TeamsController {
 
   @Post(":teamId/invite")
   @RequireTeamAccess()
-  @UseGuards(TeamManagementGuard)
+  @UseGuards(TeamAccessGuard, TeamManagementGuard)
   @ApiOperation({
     summary: "Invite a user to a team by email or username",
     description:
@@ -172,8 +174,9 @@ export class TeamsController {
     return this.teamsService.inviteUserToTeam(teamId, user.id, inviteUserDto);
   }
 
-  @Get("invitations/pending")
+  @Get("invitations")
   @ApiOperation({ summary: "Get pending invitations for the current user" })
+  @ApiQuery({ name: "queryOptions", type: QueryOptionsDto, required: false })
   @ApiResponse({
     status: 200,
     description: "Pending invitations retrieved successfully",
@@ -192,10 +195,11 @@ export class TeamsController {
     },
   })
   @ApiResponse({ status: 401, description: "Unauthorized" })
-  async getPendingInvitations(
+  async getInvitations(
     @CurrentUser() user: UserSelect,
+    @Query() query: QueryOptionsDto,
   ): Promise<ResponseModel<InvitationResponseModel[]>> {
-    return this.teamsService.getPendingInvitations(user.id);
+    return this.teamsService.getInvitations(user.id, query);
   }
 
   @Post("invitations/:invitationId/accept")

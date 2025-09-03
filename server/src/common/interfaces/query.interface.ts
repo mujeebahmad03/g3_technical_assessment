@@ -3,41 +3,41 @@ export interface Between {
   max: number;
 }
 
-export interface FilterOperations {
-  eq?: string | number | boolean | Date;
-  neq?: string | number | boolean | Date;
-  contains?: string;
+export interface FilterOperations<T = string | number | boolean | Date> {
+  eq?: T;
+  neq?: T;
+  contains?: string; // for text fields
   startsWith?: string;
   endsWith?: string;
-  gt?: number | Date;
-  gte?: number | Date;
-  lt?: number | Date;
-  lte?: number | Date;
-  in?: any[];
-  notIn?: any[];
+  gt?: T;
+  gte?: T;
+  lt?: T;
+  lte?: T;
+  in?: T[];
+  notIn?: T[];
   not?: boolean;
   between?: Between;
   isNull?: boolean;
   before?: Date;
   after?: Date;
   hasKey?: string;
-  path?: any[];
-  some?: Record<string, any>;
-  every?: Record<string, any>;
-  none?: Record<string, any>;
-  is?: Record<string, any>;
+  path?: string[]; // instead of any[]
+  some?: Record<string, unknown>; // avoid `any`, narrow to unknown
+  every?: Record<string, unknown>;
+  none?: Record<string, unknown>;
+  is?: Record<string, unknown>;
   isSet?: boolean;
 }
 
-export interface Pagination {
-  page: number;
-  limit: number;
-}
-
-export interface QueryOptions {
+export interface QueryOptions<
+  TFilters extends Record<string, FilterOperations> = Record<
+    string,
+    FilterOperations
+  >,
+> {
   page?: number;
   limit?: number;
   searchKey?: string;
-  filters?: Record<string, FilterOperations>;
+  filters?: TFilters;
   sort?: string;
 }

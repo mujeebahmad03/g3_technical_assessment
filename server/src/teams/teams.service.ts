@@ -10,11 +10,12 @@ import {
   InvitationResponseModel,
   TeamMemberResponseModel,
 } from "./dto";
-import { Role } from "prisma/generated/prisma/enums";
+import { InvitationStatus, Role } from "prisma/generated/prisma/enums";
 import { PaginationHelperService } from "src/helper/pagination-helper.service";
 import { QueryOptionsDto } from "src/common/dto";
 import { HelperService } from "src/helper/helper.service";
 import { Prisma } from "prisma/generated/prisma/client";
+import { QueryOptions } from "src/common/interfaces";
 
 @Injectable()
 export class TeamsService {
@@ -392,11 +393,11 @@ export class TeamsService {
   /**
    * Get pending invitations for a user
    */
-  async getPendingInvitations(
+  async getInvitations(
     userId: string,
-    query?: QueryOptionsDto,
+    query?: QueryOptions,
   ): Promise<ResponseModel<InvitationResponseModel[]>> {
-    const { limit = 10, page = 1, searchKey = "" } = query || {};
+    const { limit = 10, page = 1, searchKey = "", filters = {} } = query || {};
     const skip = (page - 1) * limit;
 
     const user = await this.prisma.user.findUnique({
@@ -408,18 +409,24 @@ export class TeamsService {
       this.inviteResponseHelper.throwNotFound("User not found");
     }
 
-    const whereClause: Prisma.InvitationWhereInput = {
+    // start with base condition
+    let whereClause: Prisma.InvitationWhereInput = {
       email: user.email,
-      status: "PENDING",
-      ...(searchKey
-        ? {
-            OR: [
-              { email: { contains: searchKey, mode: "insensitive" } },
-              { team: { name: { contains: searchKey, mode: "insensitive" } } }, // relational search
-            ],
-          }
-        : {}),
+      ...(searchKey && {
+        OR: [
+          { email: { contains: searchKey, mode: "insensitive" } },
+          { team: { name: { contains: searchKey, mode: "insensitive" } } },
+        ],
+      }),
     };
+
+    // apply filters (example: status eq)
+    if (filters.status?.eq) {
+      whereClause = {
+        ...whereClause,
+        status: filters.status.eq as InvitationStatus,
+      };
+    }
 
     const [invitations, count] = await Promise.all([
       this.prisma.invitation.findMany({
@@ -434,7 +441,7 @@ export class TeamsService {
     const pagination = this.helperService.paginate(count, page, limit);
 
     return this.invitesResponseHelper.returnSuccessObjectWithPagination(
-      "Pending invitations retrieved successfully",
+      "Invitations retrieved successfully",
       invitations,
       pagination,
     );
