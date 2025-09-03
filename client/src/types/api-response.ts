@@ -26,6 +26,11 @@ export interface PaginatedApiResponse<T> extends ApiResponse<T[]> {
   meta: Meta;
 }
 
+export interface PaginatedResult<T> {
+  data: T[];
+  meta: Meta;
+}
+
 export interface Between {
   min: number;
   max: number;
@@ -67,5 +72,13 @@ export interface QueryOptions<
   limit?: number;
   searchKey?: string;
   filters?: TFilters;
+  sort?: string;
+}
+
+export interface RequestParams {
+  page?: number;
+  limit?: number;
+  searchKey?: string;
+  filters?: Record<string, FilterOperations>;
   sort?: string;
 }
