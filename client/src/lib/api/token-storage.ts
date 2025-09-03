@@ -2,7 +2,7 @@ import crypto from "crypto";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { EncryptJWT, jwtDecrypt } from "jose";
 import { TokenPair } from "@/types/auth";
-import { env } from "./env";
+import { env } from "../env";
 
 const rawSecret = env.NEXT_PUBLIC_JWT_SECRET;
 

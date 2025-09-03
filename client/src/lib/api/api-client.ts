@@ -17,7 +17,7 @@ import {
 import { TokenPair } from "@/types/auth";
 import { apiRoutes } from "@/config/api-routes";
 import { TokenStorage } from "./token-storage";
-import { env } from "./env";
+import { env } from "../env";
 import { authRoutes } from "@/config";
 
 // Base configuration for axios
