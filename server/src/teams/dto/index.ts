@@ -1,10 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
+  ArrayMinSize,
+  IsArray,
   IsEmail,
+  IsNotEmpty,
   IsOptional,
   IsString,
   MaxLength,
   ValidateIf,
+  ValidateNested,
 } from "class-validator";
 import { UserResponseModel } from "src/models/auth.model";
 
@@ -47,6 +52,35 @@ export class InviteUserDto {
   @IsString()
   @MaxLength(50)
   username?: string;
+}
+
+export class BulkInviteDto {
+  @ApiProperty({
+    description: "List of users to invite",
+    type: [InviteUserDto],
+    example: [{ email: "alice@example.com" }, { username: "john_doe" }],
+  })
+  @IsArray()
+  @ArrayMinSize(1, { message: "At least one invitee must be provided" })
+  @ValidateNested({ each: true })
+  @Type(() => InviteUserDto)
+  invitees: InviteUserDto[];
+}
+
+export class BulkRemoveUserDto {
+  @ApiProperty({
+    description: "List of user IDs to remove from the team",
+    type: [String],
+    example: [
+      "1a2b3c4d-5678-90ab-cdef-1234567890ab",
+      "9z8y7x6w-5432-10ba-fedc-0987654321zy",
+    ],
+  })
+  @IsArray()
+  @ArrayMinSize(1, { message: "At least one user ID must be provided" })
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
+  targetIds: string[];
 }
 
 export class TeamMemberResponseModel {

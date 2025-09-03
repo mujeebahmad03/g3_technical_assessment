@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -23,13 +24,15 @@ import {
 } from "src/common/guards";
 import { CurrentUser, RequireTeamAccess } from "src/common/decorators";
 import { ResponseModel } from "src/models/global.model";
-import { TeamsService } from "./teams.service";
+import { TeamsService } from "./services";
 import {
   CreateTeamDto,
   InviteUserDto,
   TeamResponseModel,
   TeamMemberResponseModel,
   InvitationResponseModel,
+  BulkRemoveUserDto,
+  BulkInviteDto,
 } from "./dto";
 import { UserSelect } from "src/types/auth.types";
 import { QueryOptionsDto } from "src/common/dto";
@@ -37,6 +40,8 @@ import { QueryOptionsDto } from "src/common/dto";
 @ApiTags("Teams")
 @ApiBearerAuth()
 @ApiExtraModels(
+  BulkInviteDto,
+  BulkRemoveUserDto,
   CreateTeamDto,
   InviteUserDto,
   TeamResponseModel,
@@ -239,5 +244,135 @@ export class TeamsController {
     @CurrentUser() user: UserSelect,
   ) {
     return this.teamsService.acceptInvitation(invitationId, user.id);
+  }
+
+  @Post(":teamId/bulk-invite")
+  @RequireTeamAccess()
+  @UseGuards(TeamAccessGuard, TeamManagementGuard)
+  @ApiOperation({
+    summary: "Bulk invite users to a team",
+    description:
+      "Team admins can invite multiple users at once by providing their emails or usernames",
+  })
+  @ApiResponse({
+    status: 201,
+    description: "Users invited to team successfully",
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(ResponseModel) },
+        {
+          properties: {
+            data: {
+              type: "array",
+              items: { $ref: getSchemaPath(InvitationResponseModel) },
+            },
+          },
+        },
+      ],
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description:
+      "Bad request - Some users already members or have pending invitations",
+  })
+  @ApiResponse({ status: 401, description: "Unauthorized" })
+  @ApiResponse({ status: 403, description: "Forbidden - Not a team admin" })
+  @ApiResponse({ status: 404, description: "Team not found" })
+  async bulkInviteUsersToTeam(
+    @Param("teamId") teamId: string,
+    @CurrentUser() user: UserSelect,
+    @Body() bulkInviteDto: BulkInviteDto,
+  ): Promise<ResponseModel<InvitationResponseModel>> {
+    return this.teamsService.bulkInviteUsersToTeam(
+      teamId,
+      user.id,
+      bulkInviteDto,
+    );
+  }
+
+  @Delete(":teamId/members/:userId")
+  @RequireTeamAccess()
+  @UseGuards(TeamAccessGuard, TeamManagementGuard)
+  @ApiOperation({
+    summary: "Remove a user from a team",
+    description: "Team admins can remove a specific user from the team",
+  })
+  @ApiResponse({
+    status: 200,
+    description: "User removed from team successfully",
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(ResponseModel) },
+        {
+          properties: {
+            data: {
+              type: "object",
+              properties: {
+                message: {
+                  type: "string",
+                  example: "User removed successfully",
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
+  })
+  @ApiResponse({ status: 401, description: "Unauthorized" })
+  @ApiResponse({ status: 403, description: "Forbidden - Not a team admin" })
+  @ApiResponse({ status: 404, description: "Team or user not found" })
+  async removeUserFromTeam(
+    @Param("teamId") teamId: string,
+    @Param("userId") userId: string,
+    @CurrentUser() user: UserSelect,
+  ): Promise<ResponseModel<TeamResponseModel>> {
+    return this.teamsService.removeUserFromTeam(teamId, user.id, userId);
+  }
+
+  @Delete(":teamId/members/bulk")
+  @RequireTeamAccess()
+  @UseGuards(TeamAccessGuard, TeamManagementGuard)
+  @ApiOperation({
+    summary: "Bulk remove users from a team",
+    description: "Team admins can remove multiple users from the team at once",
+  })
+  @ApiResponse({
+    status: 200,
+    description: "Users removed from team successfully",
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(ResponseModel) },
+        {
+          properties: {
+            data: {
+              type: "object",
+              properties: {
+                message: {
+                  type: "string",
+                  example: "Users removed successfully",
+                },
+                removedCount: { type: "number", example: 3 },
+              },
+            },
+          },
+        },
+      ],
+    },
+  })
+  @ApiResponse({ status: 401, description: "Unauthorized" })
+  @ApiResponse({ status: 403, description: "Forbidden - Not a team admin" })
+  @ApiResponse({ status: 404, description: "Team not found" })
+  async bulkRemoveUsersFromTeam(
+    @Param("teamId") teamId: string,
+    @CurrentUser() user: UserSelect,
+    @Body() bulkRemoveUserDto: BulkRemoveUserDto,
+  ): Promise<ResponseModel<TeamResponseModel>> {
+    return this.teamsService.bulkRemoveUsersFromTeam(
+      teamId,
+      user.id,
+      bulkRemoveUserDto,
+    );
   }
 }
