@@ -12,10 +12,6 @@ export class TeamManagementGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<AuthRequest>();
     const teamMember = request.teamMember;
-    console.log(
-      "🚀 ~ TeamManagementGuard ~ canActivate ~ teamMember:",
-      teamMember,
-    );
 
     if (!teamMember) {
       throw new ForbiddenException("Team membership required");
