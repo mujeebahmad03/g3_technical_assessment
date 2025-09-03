@@ -7,7 +7,10 @@ import { UserSelect } from "src/types/auth.types";
 import * as argon from "argon2";
 import { LoginDto, RefreshTokenDto, RegisterDto } from "./dto";
 import { ResponseHelperService } from "src/helper/response-helper.service";
-import { AuthResponseModel } from "src/models/auth.model";
+import {
+  AuthResponseModel,
+  RefreshTokenResponseModel,
+} from "src/models/auth.model";
 import { ResponseModel } from "src/models/global.model";
 
 @Injectable()
@@ -17,6 +20,7 @@ export class AuthService {
     private readonly jwtHelper: JWTHelperService,
     private readonly helperService: HelperService,
     private readonly responseHelper: ResponseHelperService<AuthResponseModel>,
+    private readonly refreshTokenResponseHelper: ResponseHelperService<RefreshTokenResponseModel>,
   ) {}
 
   /**
@@ -106,7 +110,7 @@ export class AuthService {
    */
   async refreshToken(
     refreshTokenDto: RefreshTokenDto,
-  ): Promise<{ accessToken: string }> {
+  ): Promise<ResponseModel<RefreshTokenResponseModel>> {
     const { refreshToken } = refreshTokenDto;
 
     if (this.helperService.isStringEmptyOrNull(refreshToken)) {
@@ -115,7 +119,11 @@ export class AuthService {
 
     try {
       const accessToken = await this.jwtHelper.refreshAccessToken(refreshToken);
-      return { accessToken };
+
+      return this.refreshTokenResponseHelper.returnSuccessObject(
+        "Access token refreshed successfully",
+        { accessToken },
+      );
     } catch {
       this.responseHelper.throwUnauthorized("Invalid or expired refresh token");
     }

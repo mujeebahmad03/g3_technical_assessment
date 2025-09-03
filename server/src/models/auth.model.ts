@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, PickType } from "@nestjs/swagger";
 
 export class UserResponseModel {
   @ApiProperty({
@@ -90,3 +90,7 @@ export class AuthResponseModel {
   })
   refreshToken: string;
 }
+
+export class RefreshTokenResponseModel extends PickType(AuthResponseModel, [
+  "accessToken",
+] as const) {}

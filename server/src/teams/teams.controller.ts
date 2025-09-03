@@ -9,6 +9,7 @@ import {
 } from "@nestjs/common";
 import {
   ApiBearerAuth,
+  ApiExtraModels,
   ApiOperation,
   ApiQuery,
   ApiResponse,
@@ -35,6 +36,15 @@ import { QueryOptionsDto } from "src/common/dto";
 
 @ApiTags("Teams")
 @ApiBearerAuth()
+@ApiExtraModels(
+  CreateTeamDto,
+  InviteUserDto,
+  TeamResponseModel,
+  QueryOptionsDto,
+  TeamMemberResponseModel,
+  InvitationResponseModel,
+  ResponseModel,
+)
 @UseGuards(JwtAuthGuard)
 @Controller("teams")
 export class TeamsController {

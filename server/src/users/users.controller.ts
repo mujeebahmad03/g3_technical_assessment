@@ -1,6 +1,7 @@
 import { Controller, UseGuards, Body, Get, Patch } from "@nestjs/common";
 import {
   ApiBearerAuth,
+  ApiExtraModels,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -16,6 +17,7 @@ import { UserResponseModel } from "src/models/auth.model";
 
 @ApiTags("Users")
 @ApiBearerAuth()
+@ApiExtraModels(UpdateUserProfileDto, ResponseModel, UserResponseModel)
 @Controller("users")
 @UseGuards(JwtAuthGuard)
 export class UsersController {
@@ -34,7 +36,7 @@ export class UsersController {
         { $ref: getSchemaPath(ResponseModel) },
         {
           properties: {
-            items: { $ref: getSchemaPath(UserResponseModel) },
+            data: { $ref: getSchemaPath(UserResponseModel) },
           },
         },
       ],
@@ -60,7 +62,7 @@ export class UsersController {
         { $ref: getSchemaPath(ResponseModel) },
         {
           properties: {
-            items: { $ref: getSchemaPath(UserResponseModel) },
+            data: { $ref: getSchemaPath(UserResponseModel) },
           },
         },
       ],

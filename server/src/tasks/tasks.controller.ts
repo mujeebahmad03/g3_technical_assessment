@@ -11,6 +11,7 @@ import {
 } from "@nestjs/common";
 import {
   ApiBearerAuth,
+  ApiExtraModels,
   ApiOperation,
   ApiQuery,
   ApiResponse,
@@ -36,6 +37,13 @@ import { QueryOptionsDto } from "src/common/dto";
 
 @ApiTags("Tasks")
 @ApiBearerAuth()
+@ApiExtraModels(
+  AssignTaskDto,
+  CreateTaskDto,
+  TaskResponseModel,
+  UpdateTaskDto,
+  ResponseModel,
+)
 @UseGuards(JwtAuthGuard)
 @Controller("teams/:teamId/tasks")
 export class TasksController {
