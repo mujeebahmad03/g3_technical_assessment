@@ -55,7 +55,7 @@ model RefreshToken {
 model Team {
   id          String  @id @default(cuid())
   name        String
-  slug        String?
+  slug        String  @unique
   description String?
   isArchived  Boolean @default(false)
 

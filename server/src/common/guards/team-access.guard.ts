@@ -72,7 +72,9 @@ export class TeamAccessGuard implements CanActivate {
     });
 
     if (!teamMember) {
-      throw new ForbiddenException("Access denied: Not a member of this team");
+      throw new ForbiddenException(
+        "Access denied: You are not  a member of this team",
+      );
     }
 
     // Attach team member info to request for use in subsequent guards/controllers
