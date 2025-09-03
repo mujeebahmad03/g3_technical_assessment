@@ -112,7 +112,6 @@ model Task {
   priority    TaskPriority @default(MEDIUM)
   dueDate     DateTime?
   completedAt DateTime?
-  isArchived  Boolean      @default(false)
 
   teamId     String
   createdBy  String
