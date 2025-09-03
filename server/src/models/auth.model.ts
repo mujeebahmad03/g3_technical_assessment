@@ -43,7 +43,7 @@ export class UserResponseModel {
     description: "Short biography of the user (nullable)",
     nullable: true,
   })
-  bio: string | null;
+  bio?: string | null;
 
   @ApiProperty({
     example: "2025-09-01T12:34:56.789Z",
@@ -52,7 +52,7 @@ export class UserResponseModel {
     type: String,
     format: "date-time",
   })
-  lastLogin: Date | null;
+  lastLogin?: Date | null;
 
   @ApiProperty({
     example: "2025-08-20T10:15:30.000Z",
@@ -60,7 +60,7 @@ export class UserResponseModel {
     type: String,
     format: "date-time",
   })
-  createdAt: Date;
+  createdAt?: Date;
 
   @ApiProperty({
     example: "2025-09-01T14:20:00.000Z",
@@ -68,7 +68,7 @@ export class UserResponseModel {
     type: String,
     format: "date-time",
   })
-  updatedAt: Date;
+  updatedAt?: Date;
 }
 
 export class AuthResponseModel {

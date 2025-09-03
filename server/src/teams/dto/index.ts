@@ -6,6 +6,7 @@ import {
   MaxLength,
   ValidateIf,
 } from "class-validator";
+import { UserResponseModel } from "src/models/auth.model";
 
 export class CreateTeamDto {
   @ApiProperty({
@@ -101,14 +102,7 @@ export class TeamMemberResponseModel {
   @ApiProperty({
     description: "User details",
   })
-  user: {
-    id: string;
-    email: string;
-    username: string;
-    firstName: string;
-    lastName: string;
-    profileImage: string | null;
-  };
+  user: UserResponseModel;
 }
 
 export class TeamResponseModel {
@@ -175,14 +169,7 @@ export class TeamResponseModel {
   @ApiProperty({
     description: "Team owner details",
   })
-  owner?: {
-    id: string;
-    email: string;
-    username: string;
-    firstName: string;
-    lastName: string;
-    profileImage: string | null;
-  };
+  owner?: UserResponseModel;
 }
 
 export class InvitationResponseModel {
