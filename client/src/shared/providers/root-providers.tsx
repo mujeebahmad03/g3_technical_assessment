@@ -12,8 +12,8 @@ const queryClient = new QueryClient();
 
 export const RootProviders = ({ children }: { children: ReactNode }) => {
   return (
-    <AuthProvider>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -28,7 +28,7 @@ export const RootProviders = ({ children }: { children: ReactNode }) => {
           toastOptions={{ duration: 3000 }}
           richColors
         />
-      </QueryClientProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 };
