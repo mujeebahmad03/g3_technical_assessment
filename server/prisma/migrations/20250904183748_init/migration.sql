@@ -34,10 +34,22 @@ CREATE TABLE "public"."User" (
 );
 
 -- CreateTable
+CREATE TABLE "public"."refresh_tokens" (
+    "id" TEXT NOT NULL,
+    "token" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "isRevoked" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "refresh_tokens_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "public"."Team" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "slug" TEXT,
+    "slug" TEXT NOT NULL,
     "description" TEXT,
     "isArchived" BOOLEAN NOT NULL DEFAULT false,
     "ownerId" TEXT NOT NULL,
@@ -83,7 +95,6 @@ CREATE TABLE "public"."Task" (
     "priority" "public"."TaskPriority" NOT NULL DEFAULT 'MEDIUM',
     "dueDate" TIMESTAMP(3),
     "completedAt" TIMESTAMP(3),
-    "isArchived" BOOLEAN NOT NULL DEFAULT false,
     "teamId" TEXT NOT NULL,
     "createdBy" TEXT NOT NULL,
     "assignedTo" TEXT,
@@ -139,10 +150,22 @@ CREATE UNIQUE INDEX "User_email_key" ON "public"."User"("email");
 CREATE UNIQUE INDEX "User_username_key" ON "public"."User"("username");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "refresh_tokens_userId_key" ON "public"."refresh_tokens"("userId");
+
+-- CreateIndex
+CREATE INDEX "refresh_tokens_token_isRevoked_idx" ON "public"."refresh_tokens"("token", "isRevoked");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Team_slug_key" ON "public"."Team"("slug");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Team_ownerId_name_key" ON "public"."Team"("ownerId", "name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "TeamMember_userId_teamId_key" ON "public"."TeamMember"("userId", "teamId");
+
+-- AddForeignKey
+ALTER TABLE "public"."refresh_tokens" ADD CONSTRAINT "refresh_tokens_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."Team" ADD CONSTRAINT "Team_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "public"."User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
