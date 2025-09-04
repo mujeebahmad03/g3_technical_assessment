@@ -4,21 +4,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { loginSchema, type LoginFormData } from "@/auth/validations";
-import { useAuth } from "@/shared/providers";
-import { authRoutes, dashboardRoutes } from "@/config";
 import { AuthHeader, AuthLink, PasswordField } from "./shared";
 import { InputFormField } from "@/components/form-fields";
 import { Form } from "@/components/ui/form";
 import { LoadingButton } from "@/components/ui/loading-button";
 
+import { loginSchema, type LoginFormData } from "@/auth/validations";
+import { authRoutes, dashboardRoutes } from "@/config";
+import { useAuth } from "@/shared/providers";
+
 export function LoginForm() {
-  const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, isLoading } = useAuth();
   const router = useRouter();
 
   const form = useForm<LoginFormData>({
@@ -31,15 +30,12 @@ export function LoginForm() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      setIsLoading(true);
       await login(data);
       router.push(dashboardRoutes.dashboard);
     } catch (err: any) {
       toast.error(
         err.response?.data?.message || "Login failed. Please try again."
       );
-    } finally {
-      setIsLoading(false);
     }
   };
 

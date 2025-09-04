@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { Mail, User } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -15,16 +14,16 @@ import {
   PasswordField,
   PasswordStrengthIndicator,
 } from "./shared";
-import { registerSchema, type RegisterFormData } from "@/auth/validations";
-import { useAuth } from "@/shared/providers";
 import { InputFormField } from "@/components/form-fields";
 import { Form } from "@/components/ui/form";
 import { LoadingButton } from "@/components/ui/loading-button";
+
+import { registerSchema, type RegisterFormData } from "@/auth/validations";
 import { authRoutes } from "@/config";
+import { useAuth } from "@/shared/providers";
 
 export function RegisterForm() {
-  const [isLoading, setIsLoading] = useState(false);
-  const { register: registerUser } = useAuth();
+  const { register: registerUser, isLoading } = useAuth();
   const router = useRouter();
 
   const form = useForm<RegisterFormData>({
@@ -40,15 +39,12 @@ export function RegisterForm() {
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      setIsLoading(true);
       await registerUser(data);
       router.push(authRoutes.login);
     } catch (err: any) {
       toast.error(
         err.response?.data?.message || "Registration failed. Please try again."
       );
-    } finally {
-      setIsLoading(false);
     }
   };
 
