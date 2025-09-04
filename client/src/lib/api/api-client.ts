@@ -283,9 +283,16 @@ export const api = {
         handleApiError(error, true)
       ),
 
-  delete: <T>(url: string, config?: AxiosRequestConfig): Promise<T> =>
+  delete: <T, D = unknown>(
+    url: string,
+    data?: D,
+    config?: AxiosRequestConfig
+  ): Promise<T> =>
     axiosInstance
-      .delete<ApiResponse<T>, AxiosResponse<ApiResponse<T>>>(url, config)
+      .delete<ApiResponse<T>, AxiosResponse<ApiResponse<T>>, D>(url, {
+        ...config,
+        data,
+      })
       .then((response) => handleApiResponse<T>(response, true))
       .catch((error: AxiosError<ApiErrorResponse>) =>
         handleApiError(error, true)

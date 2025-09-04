@@ -20,6 +20,8 @@
     ],
     "paths": {
       "@/auth/*": ["./src/features/auth/*"],
+      "@/dashboard/*": ["./src/features/dashboard/*"],
+      "@/teams/*": ["./src/features/teams/*"],
       "@/components/*": ["./src/shared/components/*"],
       "@/hooks/*": ["./src/shared/hooks/*"],
       "@/shared/*": ["./src/shared/*"],
