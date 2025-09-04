@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 
 import { AuthHeader, AuthLink, PasswordField } from "./shared";
 import { InputFormField } from "@/components/form-fields";
@@ -32,10 +31,8 @@ export function LoginForm() {
     try {
       await login(data);
       router.push(dashboardRoutes.dashboard);
-    } catch (err: any) {
-      toast.error(
-        err.response?.data?.message || "Login failed. Please try again."
-      );
+    } catch (error) {
+      console.error({ error });
     }
   };
 

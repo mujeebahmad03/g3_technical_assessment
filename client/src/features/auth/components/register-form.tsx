@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { Mail, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 
 import {
   AuthHeader,
@@ -31,6 +30,7 @@ export function RegisterForm() {
     defaultValues: {
       firstName: "",
       lastName: "",
+      username: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -41,10 +41,8 @@ export function RegisterForm() {
     try {
       await registerUser(data);
       router.push(authRoutes.login);
-    } catch (err: any) {
-      toast.error(
-        err.response?.data?.message || "Registration failed. Please try again."
-      );
+    } catch (error) {
+      console.error({ error });
     }
   };
 
@@ -85,6 +83,15 @@ export function RegisterForm() {
                 required
               />
             </div>
+
+            <InputFormField
+              form={form}
+              name="username"
+              placeholder="Username"
+              label="Username"
+              icon={User}
+              required
+            />
 
             <InputFormField
               form={form}

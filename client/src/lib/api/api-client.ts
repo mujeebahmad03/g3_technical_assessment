@@ -201,7 +201,6 @@ export const api = {
     }
 
     if (queryOptions?.filters) {
-      // Handle filters as nested objects instead of stringifying
       params.filters = queryOptions.filters;
     }
 

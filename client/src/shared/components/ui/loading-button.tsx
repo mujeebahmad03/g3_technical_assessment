@@ -28,7 +28,7 @@ export function LoadingButton({
   return (
     <Button
       type={type}
-      className={`group h-12 w-full ${className}`}
+      className={`group w-full ${className}`}
       disabled={isLoading || disabled}
       onClick={onClick}
       {...props}
