@@ -366,8 +366,15 @@ const buttonVariants = cva(
       shape: "default",
       appearance: "default",
     },
-  },
+  }
 );
+
+export interface ButtonProps
+  extends React.ComponentProps<"button">,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
+  selected?: boolean;
+}
 
 function Button({
   className,
@@ -383,11 +390,7 @@ function Button({
   asChild = false,
   placeholder = false,
   ...props
-}: React.ComponentProps<"button"> &
-  VariantProps<typeof buttonVariants> & {
-    selected?: boolean;
-    asChild?: boolean;
-  }) {
+}: ButtonProps) {
   const Comp = asChild ? SlotPrimitive.Slot : "button";
   return (
     <Comp
@@ -405,7 +408,7 @@ function Button({
           underline,
           className,
         }),
-        asChild && props.disabled && "pointer-events-none opacity-50",
+        asChild && props.disabled && "pointer-events-none opacity-50"
       )}
       {...(selected && { "data-state": "open" })}
       {...props}

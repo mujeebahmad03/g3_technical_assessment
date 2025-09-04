@@ -1,0 +1,96 @@
+"use client";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
+import { Mail } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+
+import { loginSchema, type LoginFormData } from "@/auth/validations";
+import { useAuth } from "@/shared/providers";
+import { authRoutes, dashboardRoutes } from "@/config";
+import { AuthHeader, AuthLink, PasswordField } from "./shared";
+import { InputFormField } from "@/components/form-fields";
+import { Form } from "@/components/ui/form";
+import { LoadingButton } from "@/components/ui/loading-button";
+
+export function LoginForm() {
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
+  const router = useRouter();
+
+  const form = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const onSubmit = async (data: LoginFormData) => {
+    try {
+      setIsLoading(true);
+      await login(data);
+      router.push(dashboardRoutes.dashboard);
+    } catch (err: any) {
+      toast.error(
+        err.response?.data?.message || "Login failed. Please try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <AuthHeader title="Welcome back" subtitle="Login in to your account" />
+
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.7 }}
+      >
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {/* Email Field */}
+            <InputFormField
+              form={form}
+              name="email"
+              placeholder="Email"
+              icon={Mail}
+              type="email"
+              label="Email Address"
+              required
+            />
+
+            {/* Password Field */}
+            <PasswordField
+              control={form.control}
+              name="password"
+              label="Password"
+              placeholder="Enter your password"
+            />
+
+            {/* Forgot Password Link */}
+            <div className="text-right">
+              <button
+                type="button"
+                className="text-primary text-sm transition-colors hover:underline"
+              >
+                Forgot password?
+              </button>
+            </div>
+
+            <LoadingButton isLoading={isLoading} disabled={isLoading}>
+              Login
+            </LoadingButton>
+          </form>
+        </Form>
+      </motion.div>
+
+      <AuthLink
+        text="Don't have an account?"
+        linkText="Sign up"
+        onClick={() => router.push(authRoutes.register)}
+      />
+    </>
+  );
+}

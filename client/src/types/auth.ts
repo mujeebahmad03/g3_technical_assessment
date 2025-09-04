@@ -16,7 +16,11 @@ export interface TokenPair {
   refreshToken: string;
 }
 
-export interface AuthResponse {
+export interface RegisterResponse {
   user: User;
-  tokens: TokenPair;
+}
+
+export interface LoginResponse extends RegisterResponse {
+  accessToken: string;
+  refreshToken: string;
 }

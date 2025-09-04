@@ -5,4 +5,7 @@ export const apiRoutes = {
     refreshAccessToken: "/auth/refresh-access-token",
     logout: "/auth/logout",
   },
+  users: {
+    getProfile: "/user/profile",
+  },
 } as const;
