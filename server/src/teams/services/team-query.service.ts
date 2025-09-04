@@ -1,18 +1,19 @@
 import { Injectable } from "@nestjs/common";
 import { PaginationHelperService } from "src/helper/pagination-helper.service";
 import { PrismaService } from "src/prisma/prisma.service";
-import { TeamResponseModel } from "../dto";
+import { UserTeamResponseModel } from "../dto";
 import { HelperService } from "src/helper/helper.service";
 import { QueryOptionsDto } from "src/common/dto";
 import { ResponseModel } from "src/models/global.model";
 import { Prisma } from "prisma/generated/prisma/client";
+import { RawUserTeam } from "../types";
 
 @Injectable()
 export class TeamQueryService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly responseHelper: PaginationHelperService<
-      TeamResponseModel[]
+      UserTeamResponseModel[]
     >,
     private readonly helperService: HelperService,
   ) {}
@@ -20,7 +21,7 @@ export class TeamQueryService {
   async getUserTeams(
     userId: string,
     query?: QueryOptionsDto,
-  ): Promise<ResponseModel<TeamResponseModel[]>> {
+  ): Promise<ResponseModel<UserTeamResponseModel[]>> {
     const { limit = 10, page = 1, searchKey = "" } = query || {};
     const skip = (page - 1) * limit;
 
@@ -29,6 +30,9 @@ export class TeamQueryService {
     const [teams, count] = await Promise.all([
       this.prisma.team.findMany({
         where: whereClause,
+        include: {
+          members: { where: { userId }, select: { role: true } },
+        },
         orderBy: { createdAt: "desc" },
         skip,
         take: limit,
@@ -40,7 +44,7 @@ export class TeamQueryService {
 
     return this.responseHelper.returnSuccessObjectWithPagination(
       "User teams retrieved successfully",
-      teams,
+      this.transformTeams(teams),
       pagination,
     );
   }
@@ -62,5 +66,19 @@ export class TeamQueryService {
         ],
       }),
     };
+  }
+
+  private transformTeams(teams: RawUserTeam[]): UserTeamResponseModel[] {
+    return teams.map((team) => ({
+      id: team.id,
+      name: team.name,
+      slug: team.slug,
+      description: team.description,
+      isArchived: team.isArchived,
+      ownerId: team.ownerId,
+      createdAt: team.createdAt,
+      updatedAt: team.updatedAt,
+      role: team.members[0]?.role ?? null,
+    }));
   }
 }

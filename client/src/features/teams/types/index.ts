@@ -1,5 +1,10 @@
 import { User } from "@/types/auth";
 
+export enum Role {
+  ADMIN = "ADMIN",
+  MEMBER = "MEMBER",
+}
+
 export interface Team {
   id: string;
   name: string;
@@ -9,11 +14,24 @@ export interface Team {
   ownerId: string;
   createdAt: string;
   updatedAt: string;
+  members?: TeamMember[];
+}
+
+export interface UserTeam {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  isArchived: boolean;
+  ownerId: string;
+  createdAt: string;
+  updatedAt: string;
+  role: Role;
 }
 
 export interface TeamMember {
   id: string;
-  role: "ADMIN" | "MEMBER";
+  role: Role;
   joinedAt: string;
   invitedAt?: string;
   invitedBy?: string;

@@ -11,6 +11,7 @@ import {
   ValidateIf,
   ValidateNested,
 } from "class-validator";
+import { Role } from "prisma/generated/prisma/enums";
 import { UserResponseModel } from "src/models/auth.model";
 
 export class CreateTeamDto {
@@ -204,6 +205,68 @@ export class TeamResponseModel {
     description: "Team owner details",
   })
   owner?: UserResponseModel;
+}
+
+export class UserTeamResponseModel {
+  @ApiProperty({
+    example: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    description: "Unique identifier of the team",
+  })
+  id: string;
+
+  @ApiProperty({
+    example: "Development Team",
+    description: "Name of the team",
+  })
+  name: string;
+
+  @ApiProperty({
+    example: "dev-team",
+    description: "URL-friendly slug for the team (nullable)",
+    nullable: true,
+  })
+  slug: string | null;
+
+  @ApiProperty({
+    example: "A team focused on developing new features",
+    description: "Description of the team (nullable)",
+    nullable: true,
+  })
+  description: string | null;
+
+  @ApiProperty({
+    example: false,
+    description: "Whether the team is archived",
+  })
+  isArchived: boolean;
+
+  @ApiProperty({
+    example: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    description: "ID of the team owner",
+  })
+  ownerId: string;
+
+  @ApiProperty({
+    example: "2025-08-20T10:15:30.000Z",
+    description: "Timestamp when the team was created",
+    type: String,
+    format: "date-time",
+  })
+  createdAt: Date;
+
+  @ApiProperty({
+    example: "2025-09-01T14:20:00.000Z",
+    description: "Timestamp when the team was last updated",
+    type: String,
+    format: "date-time",
+  })
+  updatedAt: Date;
+
+  @ApiProperty({
+    description: "Role of user in d team",
+    enum: Role,
+  })
+  role?: Role;
 }
 
 export class InvitationResponseModel {
