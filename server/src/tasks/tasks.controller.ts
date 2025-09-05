@@ -12,6 +12,7 @@ import {
 import {
   ApiBearerAuth,
   ApiExtraModels,
+  ApiOkResponse,
   ApiOperation,
   ApiQuery,
   ApiResponse,
@@ -29,6 +30,7 @@ import { TasksService } from "./tasks.service";
 import {
   AssignTaskDto,
   CreateTaskDto,
+  TaskBoardResponseModel,
   TaskResponseModel,
   UpdateTaskDto,
 } from "./dto";
@@ -77,6 +79,21 @@ export class TasksController {
     @Query() query: QueryOptionsDto,
   ): Promise<ResponseModel<TaskResponseModel[]>> {
     return this.tasksService.listTasks(teamId, user.id, query);
+  }
+
+  @Get("board")
+  @ApiOperation({ summary: "Fetch grouped tasks for a team" })
+  @ApiOkResponse({
+    description: "Tasks fetched successfully",
+    type: TaskBoardResponseModel,
+  })
+  @ApiQuery({ name: "queryOptions", type: QueryOptionsDto, required: false })
+  async getBoardTasks(
+    @Param("teamId") teamId: string,
+    @CurrentUser() user: UserSelect,
+    @Query() query: QueryOptionsDto,
+  ) {
+    return this.tasksService.listBoardTasks(teamId, user.id, query);
   }
 
   @Post()

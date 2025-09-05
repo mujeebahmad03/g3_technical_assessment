@@ -8,11 +8,12 @@ import { QueryOptionsDto } from "src/common/dto";
 import {
   AssignTaskDto,
   CreateTaskDto,
+  TaskBoardResponseModel,
   TaskResponseModel,
   UpdateTaskDto,
 } from "./dto";
 import { Prisma } from "prisma/generated/prisma/client";
-import { TaskPriority } from "prisma/generated/prisma/enums";
+import { TaskPriority, TaskStatus } from "prisma/generated/prisma/enums";
 
 @Injectable()
 export class TasksService {
@@ -86,6 +87,93 @@ export class TasksService {
       tasks,
       pagination,
     );
+  }
+
+  async listBoardTasks(
+    teamId: string,
+    userId: string,
+    query?: QueryOptionsDto,
+  ): Promise<TaskBoardResponseModel> {
+    const { limit = 10, page = 1, searchKey = "", filters, sort } = query || {};
+    const skip = (page - 1) * limit;
+
+    // Ensure team membership
+    const isMember = await this.prisma.teamMember.findUnique({
+      where: { userId_teamId: { userId, teamId } },
+      select: { id: true },
+    });
+    if (!isMember) {
+      this.taskResponseHelper.throwForbidden(
+        "You don't have access to this team",
+      );
+    }
+
+    // Shared WHERE clause
+    const baseWhere: Prisma.TaskWhereInput = {
+      teamId,
+      ...(searchKey
+        ? {
+            OR: [
+              { title: { contains: searchKey, mode: "insensitive" } },
+              { description: { contains: searchKey, mode: "insensitive" } },
+            ],
+          }
+        : {}),
+      ...(filters?.priority
+        ? { priority: { equals: filters.priority.eq as TaskPriority } }
+        : {}),
+      ...(filters?.assignedTo
+        ? { assigneeId: { equals: filters.assignedTo.eq } }
+        : {}),
+    };
+
+    const [sortField, sortDirection] = (sort ?? "createdAt:desc").split(":");
+    const orderBy: Prisma.TaskOrderByWithRelationInput = {
+      [sortField]: sortDirection === "asc" ? "asc" : "desc",
+    };
+
+    // Helper function to fetch tasks for one column
+    const fetchColumn = async (status: TaskStatus) => {
+      const where = { ...baseWhere, status };
+      const [tasks, total] = await Promise.all([
+        this.prisma.task.findMany({
+          where,
+          include: {
+            assignee: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                username: true,
+                email: true,
+                profileImage: true,
+              },
+            },
+          },
+          orderBy,
+          skip,
+          take: limit,
+        }),
+        this.prisma.task.count({ where }),
+      ]);
+
+      return {
+        data: tasks,
+        meta: this.helperService.paginate(total, page, limit),
+      };
+    };
+
+    const [todo, inProgress, done] = await Promise.all([
+      fetchColumn("TODO"),
+      fetchColumn("IN_PROGRESS"),
+      fetchColumn("DONE"),
+    ]);
+
+    return {
+      isSuccessful: true,
+      message: "Tasks retrieved successfully",
+      data: { todo, inProgress, done },
+    };
   }
 
   async createTask(

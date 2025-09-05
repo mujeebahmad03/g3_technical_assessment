@@ -25,6 +25,7 @@ export const apiRoutes = {
   tasks: {
     createTask: (teamId: string) => `teams/${teamId}/tasks`,
     getTasks: (teamId: string) => `teams/${teamId}/tasks`,
+    getBoardTasks: (teamId: string) => `teams/${teamId}/tasks/board`,
     getTask: (teamId: string, taskId: string) =>
       `teams/${teamId}/tasks/${taskId}`,
     updateTask: (teamId: string, taskId: string) =>

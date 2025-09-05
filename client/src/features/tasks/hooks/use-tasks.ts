@@ -1,8 +1,5 @@
-"use client";
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { apiRoutes } from "@/config";
 import { api } from "@/lib/api";
 import type {
   CreateTaskFormData,
@@ -10,83 +7,83 @@ import type {
   TaskFilterData,
 } from "@/tasks/validations";
 import { Task, TaskStatus } from "@/tasks/types";
+import { apiRoutes } from "@/config";
 
+// Get all tasks with optional filters
 export function useTasks(teamId: string, filters?: TaskFilterData) {
+  return useQuery({
+    queryKey: ["tasks", teamId, filters],
+    queryFn: async () => {
+      return api.getPaginated<Task>(apiRoutes.tasks.getTasks(teamId));
+    },
+  });
+}
+
+// Get single task by ID
+export function useTask(teamId: string, taskId: string) {
+  return useQuery({
+    queryKey: ["tasks", taskId],
+    queryFn: async () => {
+      return api.get<Task>(apiRoutes.tasks.getTask(teamId, taskId));
+    },
+    enabled: !!taskId,
+  });
+}
+
+// Create new task
+export function useCreateTask(teamId: string) {
   const queryClient = useQueryClient();
 
-  // === Queries ===
-  const tasksQuery = useQuery({
-    queryKey: ["tasks", teamId, filters],
-    queryFn: () =>
-      api.getPaginated<Task>(apiRoutes.tasks.getTasks(teamId), filters),
-    enabled: !!teamId,
-  });
-
-  const taskQuery = (taskId?: string) =>
-    useQuery({
-      queryKey: ["tasks", teamId, taskId],
-      queryFn: () =>
-        api.get<Task>(apiRoutes.tasks.getTask(teamId, taskId as string)),
-      enabled: !!taskId,
-    });
-
-  // === Mutations ===
-  const createTaskMutation = useMutation({
-    mutationFn: (data: CreateTaskFormData) =>
-      api.post<Task>(apiRoutes.tasks.createTask(teamId), data),
+  return useMutation({
+    mutationFn: async (data: CreateTaskFormData) => {
+      return api.post<Task>(apiRoutes.tasks.createTask(teamId), data);
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks", teamId] });
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
   });
+}
 
-  const updateTaskMutation = (taskId: string) =>
-    useMutation({
-      mutationFn: (data: UpdateTaskFormData) =>
-        api.patch<Task>(apiRoutes.tasks.updateTask(teamId, taskId), data),
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["tasks", teamId] });
-        queryClient.invalidateQueries({ queryKey: ["tasks", teamId, taskId] });
-      },
-    });
+// Update task
+export function useUpdateTask(teamId: string, taskId: string) {
+  const queryClient = useQueryClient();
 
-  const deleteTaskMutation = useMutation({
-    mutationFn: (taskId: string) =>
+  return useMutation({
+    mutationFn: async (data: UpdateTaskFormData) => {
+      return api.patch<Task>(apiRoutes.tasks.updateTask(teamId, taskId), data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", taskId] });
+    },
+  });
+}
+
+// Delete task
+export function useDeleteTask(teamId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (taskId: string) =>
       api.delete(apiRoutes.tasks.deleteTask(teamId, taskId)),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks", teamId] });
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
   });
+}
 
-  const updateTaskStatusMutation = (taskId: string) =>
-    useMutation({
-      mutationFn: ({ status }: { status: TaskStatus }) =>
-        api.patch<Task>(apiRoutes.tasks.updateTask(teamId, taskId), { status }),
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["tasks", teamId] });
-      },
-    });
+// Update task status (for drag and drop)
+export function useUpdateTaskStatus(teamId: string, taskId: string) {
+  const queryClient = useQueryClient();
 
-  return {
-    // queries
-    tasks: tasksQuery.data?.data ?? [],
-    meta: tasksQuery.data?.meta,
-    isLoading: tasksQuery.isLoading,
-    error: tasksQuery.error,
-    taskQuery, // call it as taskQuery(taskId)
-
-    // mutations
-    createTask: createTaskMutation.mutate,
-    isCreating: createTaskMutation.isPending,
-
-    updateTask: (taskId: string) => updateTaskMutation(taskId).mutate,
-    isUpdating: (taskId: string) => updateTaskMutation(taskId).isPending,
-
-    deleteTask: deleteTaskMutation.mutateAsync,
-    isDeleting: deleteTaskMutation.isPending,
-
-    updateTaskStatus: (taskId: string) =>
-      updateTaskStatusMutation(taskId).mutate,
-    isUpdatingStatus: (taskId: string) =>
-      updateTaskStatusMutation(taskId).isPending,
-  };
+  return useMutation({
+    mutationFn: async ({ status }: { status: TaskStatus }) => {
+      return api.patch<Task>(apiRoutes.tasks.updateTask(teamId, taskId), {
+        status,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
 }

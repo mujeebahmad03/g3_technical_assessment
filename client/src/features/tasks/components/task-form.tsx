@@ -47,7 +47,7 @@ import {
 } from "@/components/form-fields";
 import { formatMemberName, getPriorityColor, getStatusColor } from "../utils";
 import { LoadingButton } from "@/components/ui/loading-button";
-import { useTasks } from "../hooks";
+import { useCreateTask, useTasks, useUpdateTask } from "../hooks";
 
 interface TaskFormProps {
   mode: "create" | "edit";
@@ -66,8 +66,10 @@ export const TaskForm = ({
   teamMembers,
 }: TaskFormProps) => {
   const [assigneeOpen, setAssigneeOpen] = useState(false);
-  const { createTask, isCreating, updateTask, isUpdating } = useTasks(teamId);
-  const isLoading = isCreating || isUpdating(task?.id ?? "");
+  const createTaskMutation = useCreateTask(teamId);
+  const updateTaskMutation = useUpdateTask(teamId, task?.id ?? "");
+  const isLoading =
+    createTaskMutation.isPending || updateTaskMutation.isPending;
   const schema = mode === "create" ? createTaskSchema : updateTaskSchema;
 
   const form = useForm({
@@ -91,9 +93,9 @@ export const TaskForm = ({
   ) => {
     try {
       if (mode === "create") {
-        createTask(data as CreateTaskFormData);
+        await createTaskMutation.mutateAsync(data as CreateTaskFormData);
       } else if (task) {
-        updateTask(task.id)(data);
+        await updateTaskMutation.mutateAsync(data);
       }
     } catch (error) {
       console.log({ error });
