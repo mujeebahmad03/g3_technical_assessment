@@ -4,7 +4,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { apiRoutes } from "@/config";
 import { api } from "@/lib/api";
-import { QueryOptions } from "@/types/api-response";
 import {
   BulkInvitePayload,
   BulkRemovePayload,

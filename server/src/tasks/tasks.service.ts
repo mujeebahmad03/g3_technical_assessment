@@ -66,6 +66,8 @@ export class TasksService {
               id: true,
               firstName: true,
               lastName: true,
+              username: true,
+              email: true,
               profileImage: true,
             },
           },

@@ -22,4 +22,16 @@ export const apiRoutes = {
     acceptInvitation: (invitationId: string) =>
       `/teams/invitations/${invitationId}/accept`,
   },
+  tasks: {
+    createTask: (teamId: string) => `teams/${teamId}/tasks`,
+    getTasks: (teamId: string) => `teams/${teamId}/tasks`,
+    getTask: (teamId: string, taskId: string) =>
+      `teams/${teamId}/tasks/${taskId}`,
+    updateTask: (teamId: string, taskId: string) =>
+      `teams/${teamId}/tasks/${taskId}`,
+    deleteTask: (teamId: string, taskId: string) =>
+      `teams/${teamId}/tasks/${taskId}`,
+    assignTask: (teamId: string, taskId: string) =>
+      `teams/${teamId}/tasks/${taskId}/assign`,
+  },
 } as const;
