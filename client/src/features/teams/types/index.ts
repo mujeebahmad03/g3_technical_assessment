@@ -67,3 +67,12 @@ export interface TeamMembersFilters {
   };
   sort?: string;
 }
+
+export interface InviteUserPayload {
+  email?: string;
+  username?: string;
+}
+
+export interface BulkInvitePayload {
+  invitees: InviteUserPayload[];
+}

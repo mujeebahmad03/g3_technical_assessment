@@ -1,18 +1,20 @@
 "use client";
 
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
+import { apiRoutes } from "@/config";
 import { api } from "@/lib/api";
 import { QueryOptions } from "@/types/api-response";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRoutes } from "@/config";
-import { BulkRemovePayload, TeamMember } from "@/teams/types";
 import {
-  BulkInviteFormValues,
-  SingleInviteFormValues,
-} from "@/teams/validations";
+  BulkInvitePayload,
+  BulkRemovePayload,
+  InviteUserPayload,
+  TeamMember,
+} from "@/teams/types";
 
 export function useTeamMembers(
   teamId: string,
-  filters: QueryOptions["filters"]
+  filters?: QueryOptions["filters"]
 ) {
   const queryClient = useQueryClient();
 
@@ -27,9 +29,9 @@ export function useTeamMembers(
   });
 
   const inviteUserMutation = useMutation({
-    mutationFn: (payload: SingleInviteFormValues) =>
+    mutationFn: (payload: InviteUserPayload) =>
       api.post(apiRoutes.teams.inviteUser(teamId), payload),
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["team-members", teamId] });
       queryClient.invalidateQueries({ queryKey: ["invitations"] });
     },
@@ -39,7 +41,7 @@ export function useTeamMembers(
   });
 
   const bulkInviteMutation = useMutation({
-    mutationFn: (payload: BulkInviteFormValues) =>
+    mutationFn: (payload: BulkInvitePayload) =>
       api.post(apiRoutes.teams.bulkInviteUsers(teamId), payload),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["team-members", teamId] });

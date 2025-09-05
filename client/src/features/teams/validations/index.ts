@@ -17,7 +17,7 @@ export const singleInviteSchema = z.object({
   identifier: z.string().min(1, "Email or username is required"),
 });
 
-const bulkInviteSchema = z.object({
+export const bulkInviteSchema = z.object({
   invitees: z
     .array(
       z.object({
