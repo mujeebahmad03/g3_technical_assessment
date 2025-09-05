@@ -14,19 +14,25 @@ export const createTaskSchema = z.object({
   status: z.enum(TaskStatus),
   priority: z.enum(TaskPriority),
   assignedTo: z.string().optional(),
-  dueDate: z.string().optional(),
+  dueDate: z.coerce.date().optional(),
 });
 
 export const updateTaskSchema = createTaskSchema.partial();
 
 export const taskFilterSchema = z.object({
-  status: z.enum(TaskStatus).optional(),
-  priority: z.enum(TaskPriority).optional(),
-  assignedTo: z.string().optional(),
-  teamId: z.string().optional(),
-  search: z.string().optional(),
+  page: z.number().optional(),
+  limit: z.number().optional(),
+  searchKey: z.string().optional(),
+  filters: z
+    .object({
+      status: z.object({ eq: z.enum(TaskStatus) }).optional(),
+      priority: z.object({ eq: z.enum(TaskPriority) }).optional(),
+      assignedTo: z.object({ eq: z.string() }).optional(),
+    })
+    .optional(),
+  sort: z.string().optional(),
 });
+export type TaskFilterData = z.infer<typeof taskFilterSchema>;
 
 export type CreateTaskFormData = z.infer<typeof createTaskSchema>;
 export type UpdateTaskFormData = z.infer<typeof updateTaskSchema>;
-export type TaskFilterData = z.infer<typeof taskFilterSchema>;

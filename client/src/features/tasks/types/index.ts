@@ -12,7 +12,7 @@ export enum TaskPriority {
   HIGH = "HIGH",
 }
 
-export interface TaskResponse {
+export interface Task {
   id: string;
 
   title: string;
@@ -38,4 +38,15 @@ export interface TaskResponse {
   createdAt: Date;
 
   updatedAt: Date;
+}
+
+export interface TaskFilters {
+  page?: number;
+  limit?: number;
+  searchKey?: string;
+  filters?: {
+    status?: { eq: TaskStatus };
+    priority?: { eq: TaskPriority };
+  };
+  sort?: string;
 }
