@@ -47,7 +47,7 @@ import {
 } from "@/components/form-fields";
 import { formatMemberName, getPriorityColor, getStatusColor } from "../utils";
 import { LoadingButton } from "@/components/ui/loading-button";
-import { useCreateTask, useTasks, useUpdateTask } from "../hooks";
+import { useCreateTask, useUpdateTask } from "../hooks";
 
 interface TaskFormProps {
   mode: "create" | "edit";
