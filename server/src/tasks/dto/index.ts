@@ -8,8 +8,6 @@ import {
 } from "class-validator";
 import { TaskStatus, TaskPriority } from "prisma/generated/prisma/enums";
 import { UserResponseModel } from "src/models/auth.model";
-import { ResponseModel } from "src/models/global.model";
-import { PaginationModel } from "src/models/pagination.model";
 
 export class CreateTaskDto {
   @ApiProperty({ example: "Implement login", description: "Task title" })
@@ -172,24 +170,3 @@ export class TaskResponseModel {
   })
   updatedAt: Date;
 }
-
-export class PaginatedTaskColumn {
-  @ApiProperty({ type: [TaskResponseModel] })
-  data: TaskResponseModel[];
-
-  @ApiProperty()
-  meta: PaginationModel;
-}
-
-export class TaskBoardGroupedData {
-  @ApiProperty({ type: PaginatedTaskColumn })
-  todo: PaginatedTaskColumn;
-
-  @ApiProperty({ type: PaginatedTaskColumn })
-  inProgress: PaginatedTaskColumn;
-
-  @ApiProperty({ type: PaginatedTaskColumn })
-  done: PaginatedTaskColumn;
-}
-
-export class TaskBoardResponseModel extends ResponseModel<TaskBoardGroupedData> {}

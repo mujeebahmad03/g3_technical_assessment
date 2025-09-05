@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { toast } from "sonner";
 
 import {
@@ -10,24 +10,46 @@ import {
   type KanbanMoveEvent,
 } from "@/components/ui/kanban";
 import { KanbanFilters } from "./filters";
-import { useUpdateTaskStatus } from "@/tasks/hooks";
+import { useUpdateTaskStatus, useTasks } from "@/tasks/hooks";
 import { useTeamMembers } from "@/teams/hooks";
 import { KanbanColumnEnhanced } from "./enhanced-column";
 
-import { TaskStatus, type TaskFilters, type Task } from "@/tasks/types";
+import { TaskStatus, type TaskFilters } from "@/tasks/types";
 import { CreateTaskDialog } from "../create-task-dialog";
 
 export function KanbanBoardEnhanced({ teamId }: { teamId: string }) {
   const [filters, setFilters] = useState<TaskFilters>({});
-  const [columns, setColumns] = useState<Record<TaskStatus, Task[]>>({
-    [TaskStatus.TODO]: [],
-    [TaskStatus.IN_PROGRESS]: [],
-    [TaskStatus.DONE]: [],
-  });
 
   const updateTaskStatusMutation = useUpdateTaskStatus();
-
   const { members } = useTeamMembers(teamId, { limit: 100 });
+
+  // Fetch all tasks for all statuses
+  const todoQuery = useTasks(teamId, {
+    ...filters,
+    filters: { status: { eq: TaskStatus.TODO } },
+  });
+  const inProgressQuery = useTasks(teamId, {
+    ...filters,
+    filters: { status: { eq: TaskStatus.IN_PROGRESS } },
+  });
+  const doneQuery = useTasks(teamId, {
+    ...filters,
+    filters: { status: { eq: TaskStatus.DONE } },
+  });
+
+  // Create columns data from query results
+  const columns = useMemo(() => {
+    const todoTasks = todoQuery.data?.pages.flatMap((page) => page.data) ?? [];
+    const inProgressTasks =
+      inProgressQuery.data?.pages.flatMap((page) => page.data) ?? [];
+    const doneTasks = doneQuery.data?.pages.flatMap((page) => page.data) ?? [];
+
+    return {
+      [TaskStatus.TODO]: todoTasks,
+      [TaskStatus.IN_PROGRESS]: inProgressTasks,
+      [TaskStatus.DONE]: doneTasks,
+    };
+  }, [todoQuery.data, inProgressQuery.data, doneQuery.data]);
 
   const handleMove = async (event: KanbanMoveEvent) => {
     const { activeContainer, overContainer } = event;
@@ -43,6 +65,11 @@ export function KanbanBoardEnhanced({ teamId }: { teamId: string }) {
         status: newStatus,
         teamId,
       });
+
+      // Invalidate queries to refetch data
+      todoQuery.refetch();
+      inProgressQuery.refetch();
+      doneQuery.refetch();
 
       toast.success(
         `Task moved to ${newStatus.replace("_", " ").toLowerCase()}`
@@ -71,7 +98,7 @@ export function KanbanBoardEnhanced({ teamId }: { teamId: string }) {
             Manage your tasks with drag-and-drop functionality
           </p>
         </div>
-        <CreateTaskDialog teamId={teamId}/>
+        <CreateTaskDialog teamId={teamId} />
       </div>
 
       {/* Filters */}
@@ -85,7 +112,7 @@ export function KanbanBoardEnhanced({ teamId }: { teamId: string }) {
       <div className="relative">
         <Kanban
           value={columns}
-          onValueChange={setColumns}
+          onValueChange={() => {}} // We handle changes via the API
           getItemValue={(item) => item?.id || ""}
           onMove={handleMove}
           className="w-full"

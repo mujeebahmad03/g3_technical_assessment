@@ -100,6 +100,8 @@ export const TaskForm = ({
       }
     } catch (error) {
       console.log({ error });
+    } finally {
+      onOpenChange(false);
     }
   };
 

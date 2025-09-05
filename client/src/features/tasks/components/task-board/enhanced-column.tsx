@@ -13,6 +13,7 @@ import {
   KanbanColumn,
   KanbanColumnContent,
   KanbanColumnHandle,
+  KanbanItem,
 } from "@/components/ui/kanban";
 
 import { TaskStatus, type TaskFilters } from "@/tasks/types";
@@ -44,6 +45,7 @@ export function KanbanColumnEnhanced({
     isFetchingNextPage,
     isLoading,
     isError,
+    refetch,
   } = useTasks(teamId, { ...filters, filters: { status: { eq: status } } });
 
   const { ref: loadMoreRef, inView } = useInView({
@@ -100,7 +102,7 @@ export function KanbanColumnEnhanced({
           description="There was an error loading the tasks. Please try again."
           action={{
             label: "Retry",
-            onClick: () => window.location.reload(),
+            onClick: () => refetch(),
           }}
         />
       </div>
@@ -143,7 +145,9 @@ export function KanbanColumnEnhanced({
         ) : (
           <>
             {allTasks.map((task) => (
-              <TaskCard key={task.id} task={task} asHandle={!isOverlay} />
+              <KanbanItem key={task.id} value={task.id}>
+                <TaskCard task={task} asHandle={!isOverlay} />
+              </KanbanItem>
             ))}
 
             {/* Load more trigger */}
