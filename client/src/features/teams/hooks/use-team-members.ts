@@ -10,12 +10,10 @@ import {
   BulkRemovePayload,
   InviteUserPayload,
   TeamMember,
+  TeamMembersFilters,
 } from "@/teams/types";
 
-export function useTeamMembers(
-  teamId: string,
-  filters?: QueryOptions["filters"]
-) {
+export function useTeamMembers(teamId: string, filters?: TeamMembersFilters) {
   const queryClient = useQueryClient();
 
   const membersQuery = useQuery({
@@ -83,9 +81,9 @@ export function useTeamMembers(
     isInviting: inviteUserMutation.isPending,
     bulkInvite: bulkInviteMutation.mutate,
     isBulkInviting: bulkInviteMutation.isPending,
-    removeUser: removeUserMutation.mutate,
+    removeUser: removeUserMutation.mutateAsync,
     isRemoving: removeUserMutation.isPending,
-    bulkRemove: bulkRemoveMutation.mutate,
+    bulkRemove: bulkRemoveMutation.mutateAsync,
     isBulkRemoving: bulkRemoveMutation.isPending,
   };
 }

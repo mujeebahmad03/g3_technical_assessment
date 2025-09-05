@@ -76,3 +76,27 @@ export interface InviteUserPayload {
 export interface BulkInvitePayload {
   invitees: InviteUserPayload[];
 }
+
+export interface TeamMemberActions {
+  onRemoveMember: (userId: string) => Promise<void> | void;
+  onEditMember?: (
+    teamId: string,
+    userId: string,
+    updates: Partial<TeamMember>
+  ) => Promise<void> | void;
+  onViewProfile?: (teamId: string, userId: string) => void;
+  onSendMessage?: (teamId: string, userId: string) => void;
+  onManagePermissions?: (teamId: string, userId: string) => void;
+}
+
+export interface TeamMembersFilters {
+  page?: number;
+  limit?: number;
+  searchKey?: string;
+  filters?: {
+    role?: {
+      eq: "ADMIN" | "MEMBER";
+    };
+  };
+  sort?: string;
+}

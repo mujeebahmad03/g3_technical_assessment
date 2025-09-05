@@ -11,7 +11,7 @@ export const DashboardLayoutContent = ({
   return (
     <SidebarInset className="flex h-screen flex-col overflow-hidden">
       <DashboardHeader breadcrumbs={breadcrumbs} currentPage={currentPage} />
-      <div className="flex-1 overflow-auto">{children}</div>
+      <div className="flex-1 overflow-auto p-4 sm:p-6">{children}</div>
     </SidebarInset>
   );
 };

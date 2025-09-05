@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
-import { Plus, X, Mail, User, Loader2 } from "lucide-react";
+import { Plus, X, Mail, User, Loader2, PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,6 +12,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Form, FormLabel } from "@/components/ui/form";
 import { InputFormField } from "@/components/form-fields";
@@ -28,8 +29,8 @@ import {
 } from "@/teams/validations";
 
 interface InviteMembersModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 // Helper function to detect email format
@@ -158,7 +159,7 @@ export function InviteMembersModal({
   // Unified success handler
   const handleSuccess = () => {
     resetForms();
-    onOpenChange(false);
+    onOpenChange?.(false);
   };
 
   const onSingleSubmit = (values: SingleInviteFormValues) => {
@@ -177,7 +178,7 @@ export function InviteMembersModal({
 
   const handleOpenChange = (newOpen: boolean) => {
     if (!isInviting && !isBulkInviting) {
-      onOpenChange(newOpen);
+      onOpenChange?.(newOpen);
       if (!newOpen) resetForms();
     }
   };
@@ -191,7 +192,19 @@ export function InviteMembersModal({
   const isAnyFormLoading = isInviting || isBulkInviting;
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      {!onOpenChange && (
+        <DialogTrigger asChild>
+          <Button variant="outline">
+            <PlusIcon
+              className="-ms-1 opacity-60"
+              size={16}
+              aria-hidden="true"
+            />
+            Invite member
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Invite members to {currentTeam?.name}</DialogTitle>

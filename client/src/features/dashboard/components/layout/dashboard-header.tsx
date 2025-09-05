@@ -1,3 +1,5 @@
+"use client";
+
 import { Fragment } from "react";
 
 import { ThemeModeToggle } from "@/components/common";
@@ -13,11 +15,16 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 
 import { DashboardHeaderProps } from "@/dashboard/types";
+import { InviteMembersModal } from "@/teams/components";
+import { useCurrentTeam } from "@/teams/hooks";
+import { Role } from "@/teams/types";
 
 export const DashboardHeader = ({
   breadcrumbs,
   currentPage,
 }: DashboardHeaderProps) => {
+  const { currentTeam } = useCurrentTeam();
+
   return (
     <header className="bg-background sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between gap-2 border-b px-4">
       <div className="flex items-center gap-2">
@@ -46,6 +53,7 @@ export const DashboardHeader = ({
       </div>
 
       <div className="flex items-center gap-2 px-4 md:ml-auto">
+        {currentTeam?.role === Role.ADMIN && <InviteMembersModal />}
         <ThemeModeToggle />
       </div>
     </header>
