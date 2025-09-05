@@ -27,6 +27,7 @@ export interface UserTeam {
   createdAt: string;
   updatedAt: string;
   role: Role;
+  logo: React.ElementType;
 }
 
 export interface TeamMember {

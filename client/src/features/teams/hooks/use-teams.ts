@@ -1,17 +1,27 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  UseQueryResult,
+} from "@tanstack/react-query";
 
 import { apiRoutes } from "@/config";
 import { api } from "@/lib/api";
-import type { Team } from "@/teams/types";
+import type { UserTeam } from "@/teams/types";
+import { getTeamLogo } from "@/teams/utils";
 import type { CreateTeamFormValues } from "@/teams/validations";
 
 export function useTeams() {
   const queryClient = useQueryClient();
 
-  const teamsQuery = useQuery({
+  const teamsQuery: UseQueryResult<UserTeam[]> = useQuery({
     queryKey: ["teams"],
-    queryFn: async () => api.getPaginated<Team>(apiRoutes.teams.getTeams),
-    select: (data) => data.data,
+    queryFn: async () => api.getPaginated<UserTeam>(apiRoutes.teams.getTeams),
+    select: (data) =>
+      data.data.map((team) => ({
+        ...team,
+        logo: getTeamLogo(team.id),
+      })),
   });
 
   const createTeamMutation = useMutation({

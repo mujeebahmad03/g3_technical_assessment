@@ -33,6 +33,7 @@ import {
   InvitationResponseModel,
   BulkRemoveUserDto,
   BulkInviteDto,
+  UserTeamResponseModel,
 } from "./dto";
 import { UserSelect } from "src/types/auth.types";
 import { QueryOptionsDto } from "src/common/dto";
@@ -49,6 +50,7 @@ import { QueryOptionsDto } from "src/common/dto";
   TeamMemberResponseModel,
   InvitationResponseModel,
   ResponseModel,
+  UserTeamResponseModel,
 )
 @UseGuards(JwtAuthGuard)
 @Controller("teams")
@@ -94,7 +96,7 @@ export class TeamsController {
           properties: {
             data: {
               type: "array",
-              items: { $ref: getSchemaPath(TeamResponseModel) },
+              items: { $ref: getSchemaPath(UserTeamResponseModel) },
             },
           },
         },
@@ -104,7 +106,7 @@ export class TeamsController {
   @ApiResponse({ status: 401, description: "Unauthorized" })
   async getUserTeams(
     @CurrentUser() user: UserSelect,
-  ): Promise<ResponseModel<TeamResponseModel[]>> {
+  ): Promise<ResponseModel<UserTeamResponseModel[]>> {
     return this.teamsService.getUserTeams(user.id);
   }
 
