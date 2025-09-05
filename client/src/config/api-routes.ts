@@ -6,7 +6,8 @@ export const apiRoutes = {
     logout: "/auth/logout",
   },
   users: {
-    getProfile: "/user/profile",
+    getProfile: "/users/profile",
+    updateProfile: "/users/update-profile",
   },
   teams: {
     getTeams: "/teams",

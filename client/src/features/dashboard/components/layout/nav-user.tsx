@@ -26,6 +26,7 @@ import { User } from "@/types/auth";
 export function NavUser() {
   const { isMobile } = useSidebar();
   const { user, logout } = useAuth();
+  console.log("🚀 ~ NavUser ~ user:", user);
 
   if (!user) return null;
 

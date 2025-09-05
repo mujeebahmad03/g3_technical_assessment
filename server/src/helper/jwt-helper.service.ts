@@ -62,13 +62,16 @@ export class JWTHelperService {
   async readToken(token: string): Promise<JWTResponse | null> {
     try {
       const secret = this.config.get<string>("JWT_SECRET");
-      const payload = await this.jwt.verifyAsync(token, { secret });
+      const payload = await this.jwt.verifyAsync<JWTPayload>(token, { secret });
 
-      return this.responseJwt({
-        expiryTime: new Date(payload.exp * 1000),
-        initiationTime: new Date(payload.iat * 1000),
+      const res = {
+        expiryTime: new Date((payload.exp || 0) * 1000),
+        initiationTime: new Date((payload.iat || 0) * 1000),
         ...payload,
-      });
+        data: payload.sub,
+      };
+
+      return this.responseJwt(res);
     } catch (error) {
       if (error instanceof TokenExpiredError) {
         console.log("Access token has expired");
@@ -82,7 +85,9 @@ export class JWTHelperService {
   async refreshAccessToken(refreshToken: string): Promise<string> {
     try {
       const secret = this.config.get<string>("JWT_REFRESH_SECRET");
-      const payload = await this.jwt.verifyAsync(refreshToken, { secret });
+      const payload = await this.jwt.verifyAsync<JWTPayload>(refreshToken, {
+        secret,
+      });
 
       const { sub: userId } = payload;
 

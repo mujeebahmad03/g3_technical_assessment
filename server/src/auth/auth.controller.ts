@@ -23,6 +23,7 @@ import {
   AuthResponseModel,
   RefreshTokenResponseModel,
 } from "src/models/auth.model";
+import { UserSelect } from "src/types/auth.types";
 
 @ApiTags("Auth")
 @ApiExtraModels(
@@ -141,7 +142,7 @@ export class AuthController {
     },
   })
   @ApiResponse({ status: 401, description: "Unauthorized" })
-  async logout(@CurrentUser("id") userId: string) {
-    return this.authService.logout(userId);
+  async logout(@CurrentUser() user: UserSelect) {
+    return this.authService.logout(user.id);
   }
 }
