@@ -2,7 +2,7 @@ export const apiRoutes = {
   auth: {
     login: "/auth/login",
     register: "/auth/register",
-    refreshAccessToken: "/auth/refresh-access-token",
+    refreshAccessToken: "/auth/refresh",
     logout: "/auth/logout",
   },
   users: {

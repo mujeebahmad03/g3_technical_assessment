@@ -1,5 +1,7 @@
-import { dashboardRoutes } from "@/config";
 import { DashboardLayoutContent } from "@/dashboard/components/layout";
+import { KanbanBoardEnhanced } from "@/tasks/components";
+
+import { dashboardRoutes } from "@/config";
 
 export default async function Page({
   params,
@@ -15,7 +17,7 @@ export default async function Page({
 
   return (
     <DashboardLayoutContent breadcrumbs={crumbs} currentPage="Overview">
-      Dashboard
+      <KanbanBoardEnhanced teamId={teamId} />
     </DashboardLayoutContent>
   );
 }

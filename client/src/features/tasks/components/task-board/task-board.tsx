@@ -6,7 +6,7 @@ import { Kanban, KanbanBoard, KanbanOverlay } from "@/components/ui/kanban";
 import { TaskColumn } from "./task-column";
 import { TaskCard } from "./task-card";
 
-import { Task, TaskStatus } from "../types";
+import { Task, TaskStatus } from "../../types";
 
 export function TaskBoard({
   taskColumns,

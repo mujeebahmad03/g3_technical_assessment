@@ -31,7 +31,7 @@ export class TasksService {
     userId: string,
     query?: QueryOptionsDto,
   ): Promise<ResponseModel<TaskResponseModel[]>> {
-    const { limit = 10, page = 1, searchKey = "" } = query || {};
+    const { limit = 10, page = 1, searchKey = "", filters } = query || {};
     const skip = (page - 1) * limit;
 
     // ensure membership
@@ -46,7 +46,7 @@ export class TasksService {
       );
     }
 
-    const whereClause: Prisma.TaskWhereInput = {
+    const where: Prisma.TaskWhereInput = {
       teamId,
       ...(searchKey
         ? {
@@ -56,11 +56,20 @@ export class TasksService {
             ],
           }
         : {}),
+      ...(filters?.status
+        ? { status: { equals: filters.status.eq as TaskStatus } }
+        : {}),
+      ...(filters?.priority
+        ? { priority: { equals: filters.priority.eq as TaskPriority } }
+        : {}),
+      ...(filters?.assignedTo
+        ? { assigneeId: { equals: filters.assignedTo.eq } }
+        : {}),
     };
 
     const [tasks, count] = await Promise.all([
       this.prisma.task.findMany({
-        where: whereClause,
+        where,
         include: {
           assignee: {
             select: {
@@ -77,7 +86,7 @@ export class TasksService {
         skip,
         take: limit,
       }),
-      this.prisma.task.count({ where: whereClause }),
+      this.prisma.task.count({ where }),
     ]);
 
     const pagination = this.helperService.paginate(count, page, limit);

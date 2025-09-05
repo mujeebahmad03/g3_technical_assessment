@@ -1,4 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  useInfiniteQuery,
+} from "@tanstack/react-query";
 
 import { api } from "@/lib/api";
 import type {
@@ -11,11 +16,17 @@ import { apiRoutes } from "@/config";
 
 // Get all tasks with optional filters
 export function useTasks(teamId: string, filters?: TaskFilterData) {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ["tasks", teamId, filters],
-    queryFn: async () => {
-      return api.getPaginated<Task>(apiRoutes.tasks.getTasks(teamId));
+    queryFn: async ({ pageParam = 1 }) => {
+      return api.getPaginated<Task>(apiRoutes.tasks.getTasks(teamId), {
+        ...filters,
+        page: pageParam,
+      });
     },
+    getNextPageParam: (lastPage) =>
+      lastPage.meta.hasMore ? lastPage.meta.page + 1 : undefined,
+    initialPageParam: 1,
   });
 }
 
@@ -73,11 +84,19 @@ export function useDeleteTask(teamId: string) {
 }
 
 // Update task status (for drag and drop)
-export function useUpdateTaskStatus(teamId: string, taskId: string) {
+export function useUpdateTaskStatus() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ status }: { status: TaskStatus }) => {
+    mutationFn: async ({
+      status,
+      teamId,
+      taskId,
+    }: {
+      status: TaskStatus;
+      teamId: string;
+      taskId: string;
+    }) => {
       return api.patch<Task>(apiRoutes.tasks.updateTask(teamId, taskId), {
         status,
       });

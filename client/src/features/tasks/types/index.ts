@@ -45,7 +45,7 @@ export interface TaskFilters {
   limit?: number;
   searchKey?: string;
   filters?: {
-    status?: { eq: TaskStatus };
+    assignedTo?: { eq: string };
     priority?: { eq: TaskPriority };
   };
   sort?: string;

@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, ChevronsUpDown, User } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { cn, getInitials } from "@/lib/utils";
@@ -70,6 +70,7 @@ export const TaskForm = ({
   const updateTaskMutation = useUpdateTask(teamId, task?.id ?? "");
   const isLoading =
     createTaskMutation.isPending || updateTaskMutation.isPending;
+  console.log("🚀 ~ TaskForm ~ isLoading:", isLoading);
   const schema = mode === "create" ? createTaskSchema : updateTaskSchema;
 
   const form = useForm({
@@ -311,10 +312,10 @@ export const TaskForm = ({
             Cancel
           </Button>
           <LoadingButton
-            isLoading
+            isLoading={isLoading}
             type="submit"
+            className="w-auto"
             disabled={isLoading}
-            loadingText={mode === "create" ? "Creating..." : "Updating..."}
           >
             {mode === "create" ? "Create Task" : "Update Task"}
           </LoadingButton>
