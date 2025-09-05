@@ -10,12 +10,12 @@ import {
   type KanbanMoveEvent,
 } from "@/components/ui/kanban";
 import { KanbanFilters } from "./filters";
+import { KanbanColumnEnhanced } from "./enhanced-column";
+import { CreateTaskDialog } from "../create-task-dialog";
+
 import { useUpdateTaskStatus, useTasks } from "@/tasks/hooks";
 import { useTeamMembers } from "@/teams/hooks";
-import { KanbanColumnEnhanced } from "./enhanced-column";
-
 import { TaskStatus, type TaskFilters } from "@/tasks/types";
-import { CreateTaskDialog } from "../create-task-dialog";
 
 export function KanbanBoardEnhanced({ teamId }: { teamId: string }) {
   const [filters, setFilters] = useState<TaskFilters>({});
