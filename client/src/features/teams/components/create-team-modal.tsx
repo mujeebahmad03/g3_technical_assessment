@@ -1,4 +1,5 @@
 "use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
@@ -92,7 +93,11 @@ export function CreateTeamModal({ open, onOpenChange }: CreateTeamModalProps) {
               >
                 Cancel
               </Button>
-              <LoadingButton isLoading={isCreating} disabled={isCreating}>
+              <LoadingButton
+                className="w-auto"
+                isLoading={isCreating}
+                disabled={isCreating}
+              >
                 Create team
               </LoadingButton>
             </DialogFooter>
