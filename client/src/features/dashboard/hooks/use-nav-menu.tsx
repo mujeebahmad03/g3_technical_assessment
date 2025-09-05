@@ -1,4 +1,4 @@
-import { LayoutDashboard, ListCheck, Users } from "lucide-react";
+import { LayoutDashboard, ListCheck, UserPlus, Users } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { dashboardRoutes } from "@/config";
@@ -19,6 +19,11 @@ export const useNavMenu = (): NavItem[] => {
       href: dashboardRoutes.teams,
       icon: Users,
       label: "Teams",
+    },
+    {
+      href: dashboardRoutes.invitations,
+      icon: UserPlus,
+      label: "Invitations",
     },
     {
       href: dashboardRoutes.tasks(currentTeam?.id ?? "#"),

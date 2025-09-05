@@ -8,6 +8,7 @@ const privateRoute = "/dashboard";
 export const dashboardRoutes = {
   dashboard: privateRoute,
   teams: `${privateRoute}/teams`,
+  invitations: `${privateRoute}/invitations`,
   members: (teamId: string) => `${dashboardRoutes.teams}/${teamId}/members`,
   tasks: (teamId: string) => `${dashboardRoutes.teams}/${teamId}/tasks`,
   profile: `${privateRoute}/profile`,

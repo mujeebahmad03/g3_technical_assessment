@@ -21,6 +21,7 @@
     "paths": {
       "@/auth/*": ["./src/features/auth/*"],
       "@/dashboard/*": ["./src/features/dashboard/*"],
+      "@/invitations/*": ["./src/features/invitations/*"],
       "@/teams/*": ["./src/features/teams/*"],
       "@/components/*": ["./src/shared/components/*"],
       "@/hooks/*": ["./src/shared/hooks/*"],
