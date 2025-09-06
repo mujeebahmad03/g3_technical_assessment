@@ -66,7 +66,7 @@ export function AssignmentField<T extends FieldValues>({
                   aria-expanded={assigneeOpen}
                   className={cn(
                     "justify-between h-12",
-                    !field.value && "text-muted-foreground"
+                    !field.value && "text-muted-foreground",
                   )}
                 >
                   {selectedAssignee ? (
@@ -101,7 +101,7 @@ export function AssignmentField<T extends FieldValues>({
                       <Check
                         className={cn(
                           "mr-2 h-4 w-4",
-                          !field.value ? "opacity-100" : "opacity-0"
+                          !field.value ? "opacity-100" : "opacity-0",
                         )}
                       />
                       <div className="flex items-center gap-2">
@@ -127,7 +127,7 @@ export function AssignmentField<T extends FieldValues>({
                             "mr-2 h-4 w-4",
                             field.value === member.userId
                               ? "opacity-100"
-                              : "opacity-0"
+                              : "opacity-0",
                           )}
                         />
                         <AssigneeAvatar member={member} />

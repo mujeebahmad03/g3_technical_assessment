@@ -73,7 +73,7 @@ export function TextareaFormField<T extends FieldValues>({
                 rows={rows}
                 className={cn(
                   fieldState.error ? "border-destructive" : "",
-                  className
+                  className,
                 )}
               />
             )}

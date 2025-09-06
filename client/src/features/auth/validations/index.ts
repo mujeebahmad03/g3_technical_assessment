@@ -13,7 +13,7 @@ export const passwordSchema = z
   .regex(/[0-9]/, "Password must contain at least one number")
   .regex(
     /[^A-Za-z0-9]/,
-    "Password must contain at least one special character"
+    "Password must contain at least one special character",
   );
 
 export const nameSchema = z
@@ -37,7 +37,7 @@ export const registerSchema = z
       .max(20, "Username must be less than 20 characters")
       .regex(
         /^[a-zA-Z0-9_]+$/,
-        "Username can only contain letters, numbers, and underscores"
+        "Username can only contain letters, numbers, and underscores",
       ),
     password: passwordSchema,
     confirmPassword: z.string().min(1, "Please confirm your password"),

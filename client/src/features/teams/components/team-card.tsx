@@ -46,7 +46,7 @@ export function TeamCard({
     <Card
       className={cn(
         "group cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02]",
-        isSelected && "ring-2 ring-primary ring-offset-2 shadow-md"
+        isSelected && "ring-2 ring-primary ring-offset-2 shadow-md",
       )}
       onClick={handleSelect}
     >

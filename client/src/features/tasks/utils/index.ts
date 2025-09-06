@@ -34,10 +34,13 @@ export const formatMemberName = (member: TeamMember) => {
 
 // Helper to create empty columns structure
 export const createEmptyColumns = () =>
-  Object.values(TaskStatus).reduce((acc, status) => {
-    acc[status] = [];
-    return acc;
-  }, {} as Record<TaskStatus, Task[]>);
+  Object.values(TaskStatus).reduce(
+    (acc, status) => {
+      acc[status] = [];
+      return acc;
+    },
+    {} as Record<TaskStatus, Task[]>,
+  );
 
 // Helper to group tasks by status
 export const groupTasksByStatus = (tasks: Task[]) => {
@@ -57,5 +60,5 @@ export const getFlattenedTasks = (cols: Record<TaskStatus, Task[]>) =>
 // Helper to find task by id in columns
 export const findTaskById = (
   cols: Record<TaskStatus, Task[]>,
-  taskId: string
+  taskId: string,
 ) => getFlattenedTasks(cols).find((task) => task.id === taskId);

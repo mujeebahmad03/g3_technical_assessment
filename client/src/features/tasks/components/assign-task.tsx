@@ -41,7 +41,7 @@ export function AssignTask({ task, open, setOpen }: AssignTaskProps) {
   });
 
   const selectedAssignee = members.find(
-    (member) => member.userId === form.watch("assigneeId")
+    (member) => member.userId === form.watch("assigneeId"),
   );
 
   const handleSubmit = async (data: AssignTaskFormData) => {

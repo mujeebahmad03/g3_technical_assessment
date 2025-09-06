@@ -85,7 +85,7 @@ export function useDataTable<TData, TValue>({
 
         return acc;
       },
-      {} as Record<string, { value: string; count: number }[]>
+      {} as Record<string, { value: string; count: number }[]>,
     );
   }, [facetColumns, table]);
 
@@ -98,14 +98,14 @@ export function useDataTable<TData, TValue>({
         acc[columnId] = filterValue || [];
         return acc;
       },
-      {} as Record<string, string[]>
+      {} as Record<string, string[]>,
     );
   }, [facetColumns, table]);
 
   const handleFacetChange = (
     columnId: string,
     value: string,
-    checked: boolean
+    checked: boolean,
   ) => {
     const currentFilter =
       (table.getColumn(columnId)?.getFilterValue() as string[]) || [];

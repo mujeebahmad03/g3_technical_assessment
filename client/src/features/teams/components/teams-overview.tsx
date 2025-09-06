@@ -24,7 +24,7 @@ export function TeamsOverview() {
     return teams.filter(
       (team) =>
         team.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        team.description?.toLowerCase().includes(searchQuery.toLowerCase())
+        team.description?.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [teams, searchQuery]);
 

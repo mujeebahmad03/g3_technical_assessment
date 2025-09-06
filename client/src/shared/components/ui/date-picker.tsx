@@ -37,10 +37,10 @@ export function DatePicker({
 }: DatePickerProps) {
   // Initialize with current date if no date is provided
   const [month, setMonth] = React.useState<number>(
-    date ? date.getMonth() : new Date().getMonth()
+    date ? date.getMonth() : new Date().getMonth(),
   );
   const [year, setYear] = React.useState<number>(
-    date ? date.getFullYear() : new Date().getFullYear()
+    date ? date.getFullYear() : new Date().getFullYear(),
   );
 
   const years = React.useMemo(() => {
@@ -72,7 +72,7 @@ export function DatePicker({
         setDate(newDate);
       }
     },
-    [date, setDate]
+    [date, setDate],
   );
 
   const handleMonthChange = React.useCallback(
@@ -88,14 +88,14 @@ export function DatePicker({
         setDate(newDate);
       }
     },
-    [date, setDate, year]
+    [date, setDate, year],
   );
 
   const handleSelect = React.useCallback(
     (newDate: Date | undefined) => {
       setDate(newDate);
     },
-    [setDate]
+    [setDate],
   );
 
   return (
@@ -105,7 +105,7 @@ export function DatePicker({
           variant="outline"
           className={cn(
             "w-full justify-start text-left font-normal",
-            !date && "text-muted-foreground"
+            !date && "text-muted-foreground",
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />

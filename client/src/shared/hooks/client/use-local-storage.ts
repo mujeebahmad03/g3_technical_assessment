@@ -13,7 +13,7 @@ interface UseLocalStorageReturn<T> {
 
 export const useLocalStorage = <T>(
   key: string,
-  initialValue: T
+  initialValue: T,
 ): UseLocalStorageReturn<T> => {
   // State to store the value
   const [storedValue, setStoredValue] = useState<T>(initialValue);
@@ -56,7 +56,7 @@ export const useLocalStorage = <T>(
         console.error(`Error setting localStorage key "${key}":`, error);
       }
     },
-    [key, storedValue]
+    [key, storedValue],
   );
 
   // Function to get current value (useful for accessing outside of component)

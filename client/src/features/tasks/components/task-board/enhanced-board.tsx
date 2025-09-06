@@ -72,7 +72,7 @@ export function KanbanBoardEnhanced({ teamId }: { teamId: string }) {
       doneQuery.refetch();
 
       toast.success(
-        `Task moved to ${newStatus.replace("_", " ").toLowerCase()}`
+        `Task moved to ${newStatus.replace("_", " ").toLowerCase()}`,
       );
     } catch (error) {
       toast.error("Failed to update task status");

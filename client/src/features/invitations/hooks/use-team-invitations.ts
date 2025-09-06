@@ -14,7 +14,7 @@ export function useTeamInvitations(filters?: TeamMembersFilters) {
     queryFn: () =>
       api.getPaginated<TeamInvitation>(
         apiRoutes.teams.getTeamInvitations,
-        filters
+        filters,
       ),
   });
 

@@ -15,6 +15,6 @@ export const useCurrentTeam = create<CurrentTeamState>()(
     }),
     {
       name: "current-team-storage",
-    }
-  )
+    },
+  ),
 );

@@ -72,9 +72,9 @@ export function TablePagination({ table, totalItems }: TablePaginationProps) {
                 table.getState().pagination.pageIndex *
                   table.getState().pagination.pageSize +
                   table.getState().pagination.pageSize,
-                0
+                0,
               ),
-              totalItems
+              totalItems,
             )}
           </span>{" "}
           of <span className="text-foreground">{totalItems.toString()}</span>

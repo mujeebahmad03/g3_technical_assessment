@@ -57,13 +57,13 @@ axiosInstance.interceptors.request.use(
   },
   (error: AxiosError) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Helper function to handle API errors consistently
 const handleApiError = (
   error: AxiosError<ApiErrorResponse>,
-  showToast: boolean = true
+  showToast: boolean = true,
 ): never => {
   if (error.response?.data) {
     const errorData = error.response.data;
@@ -76,7 +76,7 @@ const handleApiError = (
       toast.error(
         errorMessage ||
           errorData.error ||
-          "An error occurred while making the request. Please try again."
+          "An error occurred while making the request. Please try again.",
       );
     }
 
@@ -124,7 +124,7 @@ axiosInstance.interceptors.response.use(
         // Call refresh token endpoint
         const response = await axios.post<ApiResponse<RefreshTokenResponse>>(
           `${API_BASE_URL}${apiRoutes.auth.refreshAccessToken}`,
-          { refreshToken }
+          { refreshToken },
         );
 
         // Store new tokens using TokenStorage
@@ -147,13 +147,13 @@ axiosInstance.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 // Error handling for API responses (without toast for GET requests)
 const handleApiResponse = <T>(
   response: AxiosResponse<ApiResponse<T>>,
-  showToast: boolean = false
+  showToast: boolean = false,
 ): T => {
   const data = response.data;
   if (!data.isSuccessful) {
@@ -179,14 +179,14 @@ export const api = {
       .get<ApiResponse<T>>(url, config)
       .then((response) => handleApiResponse<T>(response, false))
       .catch((error: AxiosError<ApiErrorResponse>) =>
-        handleApiError(error, false)
+        handleApiError(error, false),
       ),
 
   // For paginated responses - NO TOAST
   getPaginated: async <T>(
     url: string,
     queryOptions?: QueryOptions,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): Promise<PaginatedResult<T>> => {
     // Create params object for axios
     const params: RequestParams = {};
@@ -220,7 +220,7 @@ export const api = {
     try {
       const response = await axiosInstance.get<PaginatedApiResponse<T>>(
         url,
-        mergedConfig
+        mergedConfig,
       );
       const data = response.data;
 
@@ -246,47 +246,47 @@ export const api = {
   post: <T, D = unknown>(
     url: string,
     data?: D,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): Promise<T> =>
     axiosInstance
       .post<ApiResponse<T>, AxiosResponse<ApiResponse<T>>, D>(url, data, config)
       .then((response) => handleApiResponse<T>(response, true))
       .catch((error: AxiosError<ApiErrorResponse>) =>
-        handleApiError(error, true)
+        handleApiError(error, true),
       ),
 
   put: <T, D = unknown>(
     url: string,
     data?: D,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): Promise<T> =>
     axiosInstance
       .put<ApiResponse<T>, AxiosResponse<ApiResponse<T>>, D>(url, data, config)
       .then((response) => handleApiResponse<T>(response, true))
       .catch((error: AxiosError<ApiErrorResponse>) =>
-        handleApiError(error, true)
+        handleApiError(error, true),
       ),
 
   patch: <T, D = unknown>(
     url: string,
     data?: D,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): Promise<T> =>
     axiosInstance
       .patch<ApiResponse<T>, AxiosResponse<ApiResponse<T>>, D>(
         url,
         data,
-        config
+        config,
       )
       .then((response) => handleApiResponse<T>(response, true))
       .catch((error: AxiosError<ApiErrorResponse>) =>
-        handleApiError(error, true)
+        handleApiError(error, true),
       ),
 
   delete: <T, D = unknown>(
     url: string,
     data?: D,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): Promise<T> =>
     axiosInstance
       .delete<ApiResponse<T>, AxiosResponse<ApiResponse<T>>, D>(url, {
@@ -295,7 +295,7 @@ export const api = {
       })
       .then((response) => handleApiResponse<T>(response, true))
       .catch((error: AxiosError<ApiErrorResponse>) =>
-        handleApiError(error, true)
+        handleApiError(error, true),
       ),
 };
 

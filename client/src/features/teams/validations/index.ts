@@ -22,7 +22,7 @@ export const bulkInviteSchema = z.object({
     .array(
       z.object({
         identifier: z.string().min(1, "Email or username is required"),
-      })
+      }),
     )
     .min(1, "At least one invitee is required"),
 });

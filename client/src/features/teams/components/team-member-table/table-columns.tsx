@@ -10,7 +10,7 @@ import type { TeamMember, TeamMemberActions } from "@/teams/types";
 const multiColumnFilterFn: FilterFn<TeamMember> = (
   row,
   columnId,
-  filterValue
+  filterValue,
 ) => {
   const searchableRowContent =
     `${row.original.user.firstName} ${row.original.user.lastName} ${row.original.user.email} ${row.original.user.username}`.toLowerCase();
@@ -21,7 +21,7 @@ const multiColumnFilterFn: FilterFn<TeamMember> = (
 const roleFilterFn: FilterFn<TeamMember> = (
   row,
   columnId,
-  filterValue: string[]
+  filterValue: string[],
 ) => {
   if (!filterValue?.length) return true;
   const role = row.getValue(columnId) as string;
@@ -29,7 +29,7 @@ const roleFilterFn: FilterFn<TeamMember> = (
 };
 
 export const createColumns = (
-  actions: TeamMemberActions
+  actions: TeamMemberActions,
 ): ColumnDef<TeamMember>[] => [
   {
     id: "select",

@@ -82,7 +82,7 @@ export interface TeamMemberActions {
   onEditMember?: (
     teamId: string,
     userId: string,
-    updates: Partial<TeamMember>
+    updates: Partial<TeamMember>,
   ) => Promise<void> | void;
   onViewProfile?: (teamId: string, userId: string) => void;
   onSendMessage?: (teamId: string, userId: string) => void;

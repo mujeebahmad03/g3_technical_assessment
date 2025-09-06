@@ -8,13 +8,13 @@ export function InvitationStatusCard() {
   const { invitations, isLoading } = useTeamInvitations();
 
   const pendingCount = invitations.filter(
-    (inv) => inv.status === "PENDING"
+    (inv) => inv.status === "PENDING",
   ).length;
   const acceptedCount = invitations.filter(
-    (inv) => inv.status === "ACCEPTED"
+    (inv) => inv.status === "ACCEPTED",
   ).length;
   const rejectedCount = invitations.filter(
-    (inv) => inv.status === "REJECTED"
+    (inv) => inv.status === "REJECTED",
   ).length;
 
   if (isLoading) {

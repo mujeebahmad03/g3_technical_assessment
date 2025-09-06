@@ -66,7 +66,7 @@ export interface QueryOptions<
   TFilters extends Record<string, FilterOperations> = Record<
     string,
     FilterOperations
-  >
+  >,
 > {
   page?: number;
   limit?: number;

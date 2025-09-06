@@ -15,7 +15,7 @@ export class TokenStorage {
 
   private static async encrypt(
     data: string,
-    expirationInSeconds: number
+    expirationInSeconds: number,
   ): Promise<string> {
     const encryptionKey = await this.getEncryptionKey();
 
@@ -44,7 +44,7 @@ export class TokenStorage {
     const encryptedAccessToken = await this.encrypt(accessToken, 24 * 60 * 60); // 15 minutes
     const encryptedRefreshToken = await this.encrypt(
       refreshToken,
-      7 * 24 * 60 * 60
+      7 * 24 * 60 * 60,
     ); // 7 days
 
     setCookie("accessToken", encryptedAccessToken, {

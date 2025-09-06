@@ -66,11 +66,11 @@ export const TaskForm = ({
   });
 
   const selectedAssignee = teamMembers.find(
-    (member) => member.userId === form.watch("assignedTo")
+    (member) => member.userId === form.watch("assignedTo"),
   );
 
   const handleSubmit = async (
-    data: CreateTaskFormData | UpdateTaskFormData
+    data: CreateTaskFormData | UpdateTaskFormData,
   ) => {
     try {
       if (mode === "create") {

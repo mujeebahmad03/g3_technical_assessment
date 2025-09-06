@@ -22,6 +22,7 @@
       "@/auth/*": ["./src/features/auth/*"],
       "@/dashboard/*": ["./src/features/dashboard/*"],
       "@/invitations/*": ["./src/features/invitations/*"],
+      "@/landing/*": ["./src/features/landing/*"],
       "@/tasks/*": ["./src/features/tasks/*"],
       "@/teams/*": ["./src/features/teams/*"],
       "@/components/*": ["./src/shared/components/*"],

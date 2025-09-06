@@ -20,7 +20,7 @@ export function useTeamMembers(teamId: string, filters?: TeamMembersFilters) {
     queryFn: () =>
       api.getPaginated<TeamMember>(
         apiRoutes.teams.getTeamMembers(teamId),
-        filters
+        filters,
       ),
     enabled: !!teamId,
   });

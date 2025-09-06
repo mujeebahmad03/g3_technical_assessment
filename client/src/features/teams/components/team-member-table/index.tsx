@@ -70,7 +70,7 @@ export function TeamMemberTable({
           ? `${sorting[0].id}:${sorting[0].desc ? "desc" : "asc"}`
           : undefined,
     }),
-    [pagination, debouncedSearchKey, selectedRole, sorting]
+    [pagination, debouncedSearchKey, selectedRole, sorting],
   );
 
   const { members, meta, isLoading, error, bulkRemove, removeUser } =
@@ -209,7 +209,7 @@ export function TeamMemberTable({
                         <div
                           className={cn(
                             header.column.getCanSort() &&
-                              "flex h-full cursor-pointer items-center justify-between gap-2 select-none"
+                              "flex h-full cursor-pointer items-center justify-between gap-2 select-none",
                           )}
                           onClick={header.column.getToggleSortingHandler()}
                           onKeyDown={(e) => {
@@ -225,7 +225,7 @@ export function TeamMemberTable({
                         >
                           {flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                           {{
                             asc: (
@@ -247,7 +247,7 @@ export function TeamMemberTable({
                       ) : (
                         flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )
                       )}
                     </TableHead>

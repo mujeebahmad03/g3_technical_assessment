@@ -366,7 +366,7 @@ const buttonVariants = cva(
       shape: "default",
       appearance: "default",
     },
-  }
+  },
 );
 
 export interface ButtonProps
@@ -408,7 +408,7 @@ function Button({
           underline,
           className,
         }),
-        asChild && props.disabled && "pointer-events-none opacity-50"
+        asChild && props.disabled && "pointer-events-none opacity-50",
       )}
       {...(selected && { "data-state": "open" })}
       {...props}

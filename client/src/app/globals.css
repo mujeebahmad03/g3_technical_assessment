@@ -181,3 +181,20 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .gradient-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  }
+
+  .gradient-card {
+    background: linear-gradient(135deg, var(--card) 0%, var(--muted) 100%);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}

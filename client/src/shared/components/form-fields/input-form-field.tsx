@@ -81,7 +81,7 @@ export function InputFormField<T extends FieldValues>({
                   className={cn(
                     Icon ? "pl-10" : "pl-3",
                     fieldState.error ? "border-destructive" : "",
-                    className
+                    className,
                   )}
                 />
               </div>

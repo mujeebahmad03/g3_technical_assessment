@@ -87,7 +87,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const registerMutation = useMutation({
     mutationFn: async (
-      userData: RegisterFormData
+      userData: RegisterFormData,
     ): Promise<RegisterResponse> => {
       return api.post<RegisterResponse>(apiRoutes.auth.register, userData);
     },

@@ -40,8 +40,8 @@ export function TaskCard({ task, asHandle, ...props }: TaskCardProps) {
                 task.priority === TaskPriority.HIGH
                   ? "destructive"
                   : task.priority === TaskPriority.MEDIUM
-                  ? "primary"
-                  : "warning"
+                    ? "primary"
+                    : "warning"
               }
               appearance="outline"
               className="pointer-events-none h-5 rounded-sm px-1.5 text-[11px] capitalize shrink-0"

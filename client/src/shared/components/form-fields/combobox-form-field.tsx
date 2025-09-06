@@ -38,7 +38,7 @@ type ItemWithId = BaseItem & {
 
 interface ComboboxFormFieldProps<
   TFieldValues extends FieldValues,
-  TItem extends BaseItem | ItemWithId
+  TItem extends BaseItem | ItemWithId,
 > {
   name: Path<TFieldValues>;
   control: Control<TFieldValues>;
@@ -52,7 +52,7 @@ interface ComboboxFormFieldProps<
 
 export const ComboboxFormField = <
   TFieldValues extends FieldValues,
-  TItem extends BaseItem | ItemWithId
+  TItem extends BaseItem | ItemWithId,
 >({
   name,
   control,
@@ -92,7 +92,7 @@ export const ComboboxFormField = <
                   role="combobox"
                   className={cn(
                     "w-full justify-between",
-                    !field.value && "text-muted-foreground"
+                    !field.value && "text-muted-foreground",
                   )}
                 >
                   {field.value
@@ -126,7 +126,7 @@ export const ComboboxFormField = <
                             "mr-2 h-4 w-4",
                             getValue(item) === field.value
                               ? "opacity-100"
-                              : "opacity-0"
+                              : "opacity-0",
                           )}
                         />
                         {getDisplayName(item)}

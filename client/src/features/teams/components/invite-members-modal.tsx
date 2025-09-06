@@ -131,7 +131,7 @@ export function InviteMembersModal({
   const [activeTab, setActiveTab] = useState("single");
   const { currentTeam } = useCurrentTeam();
   const { inviteUser, bulkInvite, isInviting, isBulkInviting } = useTeamMembers(
-    currentTeam?.id || ""
+    currentTeam?.id || "",
   );
 
   const singleForm = useForm<SingleInviteFormValues>({
@@ -170,7 +170,7 @@ export function InviteMembersModal({
   const onBulkSubmit = (values: BulkInviteFormValues) => {
     const payload = {
       invitees: values.invitees.map((invitee) =>
-        transformToInvitePayload(invitee.identifier)
+        transformToInvitePayload(invitee.identifier),
       ),
     };
     bulkInvite(payload, { onSuccess: handleSuccess });
