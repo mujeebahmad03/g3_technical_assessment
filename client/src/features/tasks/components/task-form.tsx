@@ -1,53 +1,33 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronsUpDown, User } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { cn, getInitials } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  CreateTaskFormData,
-  UpdateTaskFormData,
-  createTaskSchema,
-  updateTaskSchema,
-} from "../validations";
-import { TeamMember } from "@/teams/types";
-import { Task, TaskPriority, TaskStatus } from "../types";
+import { Form } from "@/components/ui/form";
 import {
   DateFormField,
   InputFormField,
   SelectFormField,
   TextareaFormField,
 } from "@/components/form-fields";
-import { formatMemberName, getPriorityColor, getStatusColor } from "../utils";
 import { LoadingButton } from "@/components/ui/loading-button";
-import { useCreateTask, useUpdateTask } from "../hooks";
+import { AssignmentField } from "./assignment-field";
+
+import { cn } from "@/lib/utils";
+import {
+  CreateTaskFormData,
+  UpdateTaskFormData,
+  createTaskSchema,
+  updateTaskSchema,
+} from "@/tasks/validations";
+import { useCreateTask, useUpdateTask } from "@/tasks/hooks";
+import { getPriorityColor, getStatusColor } from "@/tasks/utils";
+
+import { Task, TaskPriority, TaskStatus } from "@/tasks/types";
+import { TeamMember } from "@/teams/types";
 
 interface TaskFormProps {
   mode: "create" | "edit";
@@ -70,7 +50,7 @@ export const TaskForm = ({
   const updateTaskMutation = useUpdateTask(teamId, task?.id ?? "");
   const isLoading =
     createTaskMutation.isPending || updateTaskMutation.isPending;
-  console.log("🚀 ~ TaskForm ~ isLoading:", isLoading);
+
   const schema = mode === "create" ? createTaskSchema : updateTaskSchema;
 
   const form = useForm({
@@ -162,134 +142,14 @@ export const TaskForm = ({
           </div>
 
           {/* Assignee Field */}
-          <FormField
-            control={form.control}
+          <AssignmentField
+            form={form}
             name="assignedTo"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Assign to</FormLabel>
-                <Popover open={assigneeOpen} onOpenChange={setAssigneeOpen}>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={assigneeOpen}
-                        className={cn(
-                          "justify-between",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {selectedAssignee ? (
-                          <div className="flex items-center gap-2">
-                            <Avatar className="h-6 w-6">
-                              <AvatarImage
-                                src={
-                                  selectedAssignee.user.profileImage ||
-                                  "/placeholder.svg"
-                                }
-                              />
-                              <AvatarFallback className="text-xs">
-                                {getInitials(
-                                  selectedAssignee.user.firstName,
-                                  selectedAssignee.user.lastName
-                                )}
-                              </AvatarFallback>
-                            </Avatar>
-                            <span>{formatMemberName(selectedAssignee)}</span>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-2">
-                            <User className="h-4 w-4" />
-                            <span>Select team member...</span>
-                          </div>
-                        )}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-full p-0" align="start">
-                    <Command>
-                      <CommandInput placeholder="Search team members..." />
-                      <CommandList>
-                        <CommandEmpty>No team member found.</CommandEmpty>
-                        <CommandGroup>
-                          <CommandItem
-                            value=""
-                            onSelect={() => {
-                              form.setValue("assignedTo", "");
-                              setAssigneeOpen(false);
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                !field.value ? "opacity-100" : "opacity-0"
-                              )}
-                            />
-                            <div className="flex items-center gap-2">
-                              <User className="h-4 w-4 text-muted-foreground" />
-                              <span className="text-muted-foreground">
-                                Unassigned
-                              </span>
-                            </div>
-                          </CommandItem>
-                          {teamMembers.map((member) => (
-                            <CommandItem
-                              key={member.id}
-                              value={`${formatMemberName(member)} ${
-                                member.user.email
-                              }`}
-                              onSelect={() => {
-                                form.setValue("assignedTo", member.userId);
-                                setAssigneeOpen(false);
-                              }}
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  field.value === member.userId
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                )}
-                              />
-                              <div className="flex items-center gap-2">
-                                <Avatar className="h-6 w-6">
-                                  <AvatarImage
-                                    src={
-                                      member.user.profileImage ||
-                                      "/placeholder.svg"
-                                    }
-                                  />
-                                  <AvatarFallback className="text-xs">
-                                    {getInitials(
-                                      member.user.firstName,
-                                      member.user.lastName
-                                    )}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <div className="flex flex-col">
-                                  <span className="text-sm font-medium">
-                                    {formatMemberName(member)}
-                                  </span>
-                                  <span className="text-xs text-muted-foreground">
-                                    {member.user.email}
-                                  </span>
-                                </div>
-                              </div>
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-                <FormDescription>
-                  Optional. Choose a team member to assign this task to.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
+            assigneeOpen={assigneeOpen}
+            setAssigneeOpen={setAssigneeOpen}
+            selectedAssignee={selectedAssignee}
+            teamMembers={teamMembers}
+            description="Optional. Choose a team member to assign this task to."
           />
 
           {/* Due Date Field */}
@@ -304,7 +164,7 @@ export const TaskForm = ({
           />
         </div>
 
-        <DialogFooter className="gap-2 sm:gap-0">
+        <DialogFooter className="gap-3">
           <Button
             type="button"
             variant="outline"

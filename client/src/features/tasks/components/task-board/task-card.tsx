@@ -2,13 +2,25 @@
 
 import * as React from "react";
 import { format } from "date-fns";
+import { MoreHorizontal } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { KanbanItem, KanbanItemHandle } from "@/components/ui/kanban";
+import { TaskDeleteDialog } from "./delete-dialog";
+import { UpdateTaskDialog } from "../update-task-dialog";
+import { AssignTask } from "../assign-task";
 
 import { getInitials } from "@/lib/utils";
 import { Task, TaskPriority } from "@/tasks/types";
+import { MoreAction } from "./more-actions";
 
 interface TaskCardProps
   extends Omit<React.ComponentProps<typeof KanbanItem>, "value" | "children"> {
@@ -35,6 +47,7 @@ export function TaskCard({ task, asHandle, ...props }: TaskCardProps) {
           >
             {task.priority}
           </Badge>
+          <MoreAction task={task} />
         </div>
         <div className="flex items-center justify-between text-muted-foreground text-xs">
           {task.assignee && (

@@ -106,3 +106,22 @@ export function useUpdateTaskStatus() {
     },
   });
 }
+
+export function useAssignTask() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      taskId,
+      teamId,
+      assigneeId,
+    }: {
+      teamId: string;
+      taskId: string;
+      assigneeId: string;
+    }) => api.patch(apiRoutes.tasks.assignTask(teamId, taskId), { assigneeId }),
+    onSuccess: (_, { taskId }) => {
+      queryClient.invalidateQueries({ queryKey: ["tasks", taskId] });
+    },
+  });
+}

@@ -32,7 +32,12 @@ export const taskFilterSchema = z.object({
     .optional(),
   sort: z.string().optional(),
 });
-export type TaskFilterData = z.infer<typeof taskFilterSchema>;
 
+export const assignTask = z.object({
+  assigneeId: z.string(),
+});
+
+export type AssignTaskFormData = z.infer<typeof assignTask>;
+export type TaskFilterData = z.infer<typeof taskFilterSchema>;
 export type CreateTaskFormData = z.infer<typeof createTaskSchema>;
 export type UpdateTaskFormData = z.infer<typeof updateTaskSchema>;

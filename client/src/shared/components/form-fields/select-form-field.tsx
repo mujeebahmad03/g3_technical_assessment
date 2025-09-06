@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 interface SelectFormFieldProps<TFieldValues extends FieldValues, TOption> {
   control: Control<TFieldValues>;
@@ -55,7 +56,7 @@ export const SelectFormField = <TFieldValues extends FieldValues, TOption>({
             )}
             <Select value={field.value} onValueChange={field.onChange}>
               <FormControl>
-                <SelectTrigger className={Icon ? "pl-10" : ""}>
+                <SelectTrigger className={cn(Icon && "pl-10", "w-full")}>
                   <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
               </FormControl>
