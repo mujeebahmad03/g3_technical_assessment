@@ -26,15 +26,15 @@ export function KanbanBoardEnhanced({ teamId }: { teamId: string }) {
   // Fetch all tasks for all statuses
   const todoQuery = useTasks(teamId, {
     ...filters,
-    filters: { status: { eq: TaskStatus.TODO } },
+    filters: { ...filters.filters, status: { eq: TaskStatus.TODO } },
   });
   const inProgressQuery = useTasks(teamId, {
     ...filters,
-    filters: { status: { eq: TaskStatus.IN_PROGRESS } },
+    filters: { ...filters.filters, status: { eq: TaskStatus.IN_PROGRESS } },
   });
   const doneQuery = useTasks(teamId, {
     ...filters,
-    filters: { status: { eq: TaskStatus.DONE } },
+    filters: { ...filters.filters, status: { eq: TaskStatus.DONE } },
   });
 
   // Create columns data from query results

@@ -46,7 +46,10 @@ export function KanbanColumnEnhanced({
     isLoading,
     isError,
     refetch,
-  } = useTasks(teamId, { ...filters, filters: { status: { eq: status } } });
+  } = useTasks(teamId, {
+    ...filters,
+    filters: { ...filters.filters, status: { eq: status } },
+  });
 
   const { ref: loadMoreRef, inView } = useInView({
     threshold: 0,
