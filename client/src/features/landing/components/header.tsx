@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { ThemeModeToggle } from "@/components/common";
+
 import { authRoutes } from "@/config";
 
 export function Header() {
@@ -56,33 +58,37 @@ export function Header() {
           </nav>
 
           {/* Desktop CTA */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              className="text-muted-foreground hover:text-foreground"
-              onClick={() => push(authRoutes.login)}
-            >
-              Sign In
-            </Button>
-            <Button
-              className="gradient-primary text-primary-foreground hover:opacity-90 transition-opacity"
-              onClick={() => push(authRoutes.register)}
-            >
-              Get Started
-            </Button>
-          </div>
+          <div className="flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                className="text-muted-foreground hover:text-foreground"
+                onClick={() => push(authRoutes.login)}
+              >
+                Sign In
+              </Button>
+              <Button
+                className="gradient-primary text-primary-foreground hover:opacity-90 transition-opacity"
+                onClick={() => push(authRoutes.register)}
+              >
+                Get Started
+              </Button>
+            </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? (
-              <X className="w-6 h-6" />
-            ) : (
-              <Menu className="w-6 h-6" />
-            )}
-          </button>
+            {/* Mobile Menu Button */}
+            <button
+              className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
+            </button>
+
+            <ThemeModeToggle />
+          </div>
         </div>
 
         {/* Mobile Menu */}
