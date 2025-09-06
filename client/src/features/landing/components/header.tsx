@@ -1,18 +1,20 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Zap } from "lucide-react";
+import { Menu, User, X, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { ThemeModeToggle } from "@/components/common";
 
-import { authRoutes } from "@/config";
+import { authRoutes, dashboardRoutes } from "@/config";
+import { useAuth } from "@/shared/providers";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { push } = useRouter();
+  const { isAuthenticated } = useAuth();
 
   const navItems = [
     { name: "Features", href: "#features" },
@@ -60,19 +62,41 @@ export function Header() {
           {/* Desktop CTA */}
           <div className="flex items-center space-x-4">
             <div className="hidden md:flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                className="text-muted-foreground hover:text-foreground"
-                onClick={() => push(authRoutes.login)}
-              >
-                Sign In
-              </Button>
-              <Button
-                className="gradient-primary text-primary-foreground hover:opacity-90 transition-opacity"
-                onClick={() => push(authRoutes.register)}
-              >
-                Get Started
-              </Button>
+              {isAuthenticated ? (
+                <>
+                  <Button
+                    variant="ghost"
+                    className="text-muted-foreground hover:text-foreground"
+                    onClick={() => push(dashboardRoutes.dashboard)}
+                  >
+                    Dashboard
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="flex items-center space-x-2 bg-transparent"
+                    onClick={() => push(dashboardRoutes.dashboard)}
+                  >
+                    <User className="w-4 h-4" />
+                    <span>Profile</span>
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    variant="ghost"
+                    className="text-muted-foreground hover:text-foreground"
+                    onClick={() => push(authRoutes.login)}
+                  >
+                    Sign In
+                  </Button>
+                  <Button
+                    className="gradient-primary text-primary-foreground hover:opacity-90 transition-opacity"
+                    onClick={() => push(authRoutes.register)}
+                  >
+                    Get Started
+                  </Button>
+                </>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -113,19 +137,41 @@ export function Header() {
                   </a>
                 ))}
                 <div className="flex flex-col space-y-2 pt-4 border-t border-border">
-                  <Button
-                    variant="ghost"
-                    className="justify-start"
-                    onClick={() => push(authRoutes.login)}
-                  >
-                    Sign In
-                  </Button>
-                  <Button
-                    className="gradient-primary text-primary-foreground justify-start"
-                    onClick={() => push(authRoutes.register)}
-                  >
-                    Get Started
-                  </Button>
+                  {isAuthenticated ? (
+                    <>
+                      <Button
+                        variant="ghost"
+                        className="justify-start"
+                        onClick={() => push(dashboardRoutes.dashboard)}
+                      >
+                        Dashboard
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="justify-start flex items-center space-x-2 bg-transparent"
+                        onClick={() => push(dashboardRoutes.dashboard)}
+                      >
+                        <User className="w-4 h-4" />
+                        <span>Profile</span>
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        variant="ghost"
+                        className="justify-start"
+                        onClick={() => push(authRoutes.login)}
+                      >
+                        Sign In
+                      </Button>
+                      <Button
+                        className="gradient-primary text-primary-foreground justify-start"
+                        onClick={() => push(authRoutes.register)}
+                      >
+                        Get Started
+                      </Button>
+                    </>
+                  )}
                 </div>
               </nav>
             </motion.div>
