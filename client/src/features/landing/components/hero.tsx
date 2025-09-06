@@ -2,10 +2,14 @@
 
 import { type Variants, motion } from "framer-motion";
 import { ArrowRight, Play, Users, CheckCircle, Zap } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { authRoutes } from "@/config";
 
 export function Hero() {
+  const { push } = useRouter();
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -82,6 +86,7 @@ export function Hero() {
             <Button
               size="lg"
               className="gradient-primary text-primary-foreground hover:opacity-90 transition-opacity group"
+              onClick={() => push(authRoutes.register)}
             >
               Start Free Trial
               <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
