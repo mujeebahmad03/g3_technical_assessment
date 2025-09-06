@@ -2,8 +2,10 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { authRoutes } from "@/config";
 
 export function CTA() {
   const benefits = [
@@ -12,6 +14,8 @@ export function CTA() {
     "Cancel anytime",
     "Full feature access",
   ];
+
+  const { push } = useRouter();
 
   return (
     <section className="py-20 relative overflow-hidden">
@@ -50,6 +54,7 @@ export function CTA() {
             <Button
               size="lg"
               className="gradient-primary text-primary-foreground hover:opacity-90 transition-opacity group text-lg px-8 py-6"
+              onClick={() => push(authRoutes.register)}
             >
               Start Your Free Trial
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />

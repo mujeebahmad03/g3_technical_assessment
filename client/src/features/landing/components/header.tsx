@@ -2,12 +2,15 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Zap } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { authRoutes } from "@/config";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { push } = useRouter();
 
   const navItems = [
     { name: "Features", href: "#features" },
@@ -57,10 +60,14 @@ export function Header() {
             <Button
               variant="ghost"
               className="text-muted-foreground hover:text-foreground"
+              onClick={() => push(authRoutes.login)}
             >
               Sign In
             </Button>
-            <Button className="gradient-primary text-primary-foreground hover:opacity-90 transition-opacity">
+            <Button
+              className="gradient-primary text-primary-foreground hover:opacity-90 transition-opacity"
+              onClick={() => push(authRoutes.register)}
+            >
               Get Started
             </Button>
           </div>
@@ -100,10 +107,17 @@ export function Header() {
                   </a>
                 ))}
                 <div className="flex flex-col space-y-2 pt-4 border-t border-border">
-                  <Button variant="ghost" className="justify-start">
+                  <Button
+                    variant="ghost"
+                    className="justify-start"
+                    onClick={() => push(authRoutes.login)}
+                  >
                     Sign In
                   </Button>
-                  <Button className="gradient-primary text-primary-foreground justify-start">
+                  <Button
+                    className="gradient-primary text-primary-foreground justify-start"
+                    onClick={() => push(authRoutes.register)}
+                  >
                     Get Started
                   </Button>
                 </div>
