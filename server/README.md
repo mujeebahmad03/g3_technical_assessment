@@ -1,10 +1,10 @@
-# Team Task Manager API
+# TeamFlow API
 
 A comprehensive team collaboration and task management system built with NestJS, featuring user authentication, team management, task assignment, and real-time collaboration capabilities.
 
 ## 🚀 About the Application
 
-The Team Task Manager is a robust backend API that enables teams to collaborate effectively by providing:
+The TeamFlow is a robust backend API that enables teams to collaborate effectively by providing:
 
 - **User Management**: Registration, authentication, and profile management
 - **Team Collaboration**: Create teams, invite members, and manage roles
