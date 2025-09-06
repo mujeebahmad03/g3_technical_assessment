@@ -866,6 +866,17 @@ npm run prisma:dev:deploy
 npm run prisma:view
 ```
 
+### Database Seeding
+```bash
+# Seed the database with sample data
+npx prisma db seed
+
+# Or using npm script (if configured)
+npm run prisma:seed
+```
+
+**Note**: The seed script creates 10 sample users with the default password `password123`. Make sure to run this after setting up your database and running migrations.
+
 ### Database Schema Updates
 1. Modify `prisma/schema.prisma`
 2. Create migration: `npm run prisma:deploy "description"`
