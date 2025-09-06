@@ -34,20 +34,22 @@ export function TaskCard({ task, asHandle, ...props }: TaskCardProps) {
       <div className="flex flex-col gap-2.5">
         <div className="flex items-center justify-between gap-2">
           <span className="line-clamp-1 font-medium text-sm">{task.title}</span>
-          <Badge
-            variant={
-              task.priority === TaskPriority.HIGH
-                ? "destructive"
-                : task.priority === TaskPriority.MEDIUM
-                ? "primary"
-                : "warning"
-            }
-            appearance="outline"
-            className="pointer-events-none h-5 rounded-sm px-1.5 text-[11px] capitalize shrink-0"
-          >
-            {task.priority}
-          </Badge>
-          <MoreAction task={task} />
+          <div className="flex items-center gap-3">
+            <Badge
+              variant={
+                task.priority === TaskPriority.HIGH
+                  ? "destructive"
+                  : task.priority === TaskPriority.MEDIUM
+                  ? "primary"
+                  : "warning"
+              }
+              appearance="outline"
+              className="pointer-events-none h-5 rounded-sm px-1.5 text-[11px] capitalize shrink-0"
+            >
+              {task.priority}
+            </Badge>
+            <MoreAction task={task} />
+          </div>
         </div>
         <div className="flex items-center justify-between text-muted-foreground text-xs">
           {task.assignee && (
